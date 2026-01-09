@@ -6,14 +6,51 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/08 19:12:39 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:38:09 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include "minishell.h"
+
+
+// void	insert_front(t_token **head, int content)
+// {
+// 	t_token	*newnode;
+
+// 	newnode = create_token(content);
+// 	if (!(*head))
+// 	{
+// 		newnode->next = NULL;
+// 		newnode->prev = NULL;
+// 		*head = newnode;
+// 		return ;
+// 	}
+// 	newnode->next = *head;
+// 	newnode->prev = NULL;
+// 	(*head)->prev = newnode;
+// 	*head = newnode;
+// }
+
+// void	insert_back(t_token **head, int content)
+// {
+// 	t_token	*newnode;
+// 	t_token	*temp;
+
+// 	newnode = create_token(content);
+// 	if (!(*head))
+// 	{
+// 		*head = newnode;
+// 		newnode->next = NULL;
+// 		newnode->prev = NULL;
+// 		return ;
+// 	}
+// 	temp = *head;
+// 	while (temp->next != NULL)
+// 		temp = temp->next;
+// 	temp->next = newnode;
+// 	newnode->next = NULL;
+// 	newnode->prev = temp;
+// }
 
 int	main(void)
 {
@@ -25,7 +62,7 @@ int	main(void)
 		line = readline("> ");
 		if (!line)
 			break ;
-		if (line != "")
+		if (!ft_strncmp(line, "", 2))
 			add_history(line);
 		printf("%s\n", line);
 		free(line);
