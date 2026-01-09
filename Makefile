@@ -5,7 +5,9 @@ LIBFT = includes/libft/
 LIBFT_A = includes/libft/libft.a
 
 SRCS = minishell.c \
-		lexer/lexer.c
+		lexer/lexer.c \
+		lexer/token_functions.c \
+		lexer/free_tokens.c
 
 OBJ_DIR = objs/
 OBJS = $(addprefix $(OBJ_DIR), $(SRCS:.c=.o))
@@ -19,6 +21,9 @@ all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_A)
 	$(CC) $(CFLAGS) $(OBJS) -lreadline $(LIBFT_A) -o $(NAME)
+
+run: all
+	valgrind --suppressions=valgrind.sup --leak-check=full --show-leak-kinds=all ./minishell
 
 $(LIBFT_A):
 	$(MAKE) -s -C $(LIBFT)

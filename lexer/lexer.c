@@ -5,40 +5,40 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/08 19:17:53 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/09 14:38:14 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/01/09 15:20:34 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/01/09 17:05:41 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*create_token(char *value, t_token_type type)
+t_token	*assign_tokens(t_mini *mini)
 {
-	t_token	*node;
-
-	node = malloc(sizeof(t_token));
-	if (!node)
-		return (NULL);
-	node->value = value;
-	node->type = type;
-	node->prev = NULL;
-	node->next = NULL;
-	return (node);
-}
-
-int	list_size(t_token *head)
-{
-	t_token	*temp;
+	t_token	*token_list;
+	char	*temp;
+	char	*substr;
 	int		i;
-
+	
+	temp = ft_strtrim(mini->input, " \t\r");
+	token_list = NULL;
 	i = 0;
-	temp = head;
-	if (!temp)
-		return (i);
-	while (temp != NULL)
+	while (temp[i])
 	{
-		temp = temp->next;
+		// if (temp[i] == '|')
+		// {
+			// insert_back(&token_list, "|", TOKEN_PIPE);
+			// i++;
+			// break ;
+		// }
+		if (temp[i + 1] == ' ' || temp[i + 1] == '\0')
+		{
+			substr = ft_substr(temp, ft_strlen(temp) - i, i);
+			insert_back(&token_list, substr, TOKEN_WORD);
+			// printf("substr: %s\n", substr);
+			// break ;
+		}
 		i++;
 	}
-	return (i);
+	free(temp);
+	return (token_list);
 }
