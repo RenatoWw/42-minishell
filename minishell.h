@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/08 18:45:14 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/09 14:19:03 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <unistd.h>
+# include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "includes/libft/libft.h"
 
 typedef enum e_token_type
 {
