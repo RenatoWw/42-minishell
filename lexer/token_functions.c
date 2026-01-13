@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:17:53 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:04:49 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:34:20 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ void	print_tokens(t_token *head)
 {
 	t_token	*temp;
 
-	temp = head;
 	if (!head)
 		return ;
-	while (temp->next != NULL)
+	temp = head;
+	while (temp != NULL)
 	{
-		printf("Value:%s\nType: %d\n", temp->value, temp->type);
+		printf("Value: %s Type: %d\n", temp->value, temp->type);
 		temp = temp->next;
 	}
 }
@@ -81,6 +81,8 @@ void	insert_back(t_token **head, char *value, t_token_type type)
 	t_token	*temp;
 
 	newnode = create_token(value, type);
+	if (!newnode)
+		return ;
 	if (!(*head))
 	{
 		*head = newnode;

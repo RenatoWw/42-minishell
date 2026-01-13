@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 17:06:10 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:07:34 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:37:33 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,15 @@ void	free_tokens(t_token *token_list)
 {
 	t_token	*temp;
 
-	temp = token_list;
-	while (!temp)
+	if (!token_list)
+		return ;
+	while (token_list != NULL)
 	{
-		free(token_list->value);
-		temp = temp->next;
+		temp = token_list->next;
+		if (token_list->value)
+			free(token_list->value);
+		free(token_list);
+		token_list = temp;
 	}
 	free(token_list);
 }

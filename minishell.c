@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:08:39 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:55:51 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,11 @@ int	main(void)
 	// t_token	*token_list;
 	t_mini	mini;
 
-	mini.input = readline("> ");
+	// mini.input = readline("> ");
+	mini.input = ft_strdup("echo \"hello world\" >> out.txt | cat out.txt");
+	// token_list = NULL;
+	mini.tokens = NULL;
+	printf("\ninput: %s\n\n", mini.input);
 	mini.tokens = assign_tokens(&mini);
 	print_tokens(mini.tokens);
 	// printf("%s\n", mini->tokens->value);
