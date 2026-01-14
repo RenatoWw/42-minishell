@@ -1,68 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_functions.c                                  :+:      :+:    :+:   */
+/*   parser_functions.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/08 19:17:53 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/14 16:43:49 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/01/14 16:44:31 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/01/14 16:50:18 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*create_token(char *value, t_token_type type)
+t_cmd	*create_node(char **cmd_args)
 {
-	t_token	*node;
+	t_cmd	*node;
 
-	node = malloc(sizeof(t_token));
+	node = malloc(sizeof(t_cmd));
 	if (!node)
 		return (NULL);
-	node->value = value;
-	node->type = type;
+	node->cmd_args = cmd_args;
 	node->prev = NULL;
 	node->next = NULL;
 	return (node);
 }
 
-void	print_tokens(t_token *head)
+void	insert_args_back(t_cmd **head, char **cmd_args)
 {
-	t_token	*temp;
+	t_cmd	*newnode;
+	t_cmd	*temp;
 
-	if (!head)
-		return ;
-	temp = head;
-	while (temp != NULL)
-	{
-		printf("Value: %s \t\t --Type: %d\n", temp->value, temp->type);
-		temp = temp->next;
-	}
-}
-
-int	list_size(t_token *head)
-{
-	t_token	*temp;
-	int		i;
-
-	i = 0;
-	temp = head;
-	if (!temp)
-		return (i);
-	while (temp != NULL)
-	{
-		temp = temp->next;
-		i++;
-	}
-	return (i);
-}
-
-void	insert_back(t_token **head, char *value, t_token_type type)
-{
-	t_token	*newnode;
-	t_token	*temp;
-
-	newnode = create_token(value, type);
+	newnode = create_node(cmd_args);
 	if (!newnode)
 		return ;
 	if (!(*head))
