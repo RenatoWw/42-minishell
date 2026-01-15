@@ -19,6 +19,8 @@
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 # include "includes/libft/libft.h"
 
 # define RED "\033[31m"
@@ -84,5 +86,17 @@ void		free_tokens(t_token *token_list);
 t_cmd		*parse_tokens(t_token *token_list);
 int			print_error(char *token_value);
 int			invalid_pipe(t_token *temp);
+
+/*execute*/
+
+t_cmd	*cmd_new(void);
+void	cmd_add_back(t_cmd **list, t_cmd *new);
+void	add_arg(t_cmd *cmd, char *value);
+void	handle_redirect_out(t_cmd *cmd, char *file);
+char	*find_cmd_path(char *cmd, char **envp);
+void	child_process(t_cmd *cmd, int *pipefd, char **envp);
+void	parent_process(t_cmd *cmd, int *pipefd);
+void	wait_all(t_cmd *cmd);
+void	execute_cmds(t_cmd *cmd_list, char **envp);
 
 #endif
