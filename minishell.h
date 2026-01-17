@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/13 21:20:48 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 01:32:12 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,19 @@ typedef struct s_mini
 
 t_token		*create_token(char *value, t_token_type type);
 int			list_size(t_token *head);
-void		insert_front(t_token **head, char *value, t_token_type type);
 void		insert_back(t_token **head, char *value, t_token_type type);
 t_token		*assign_tokens(t_mini *mini);
 void		print_tokens(t_token *head);
 void		free_tokens(t_token *token_list);
 
-t_cmd		*parse_tokens(t_token *token_list);
+t_cmd		*parse_tokens(t_token *token_list, int *exit_code);
 int			print_error(char *token_value);
 int			invalid_pipe(t_token *temp);
+int			verify_syntax(t_token *token_list, int *exit_code);
+t_cmd		*create_node(char **cmd_args);
+void		insert_cmd_back(t_cmd **head, t_cmd *newnode);
+void		print_cmd_list(t_cmd *cmd_list);
+void		free_cmds(t_cmd *cmd_list);
+void		fill_cmd_data(t_cmd *new_cmd, t_token **temp);
 
 #endif
