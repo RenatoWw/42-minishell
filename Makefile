@@ -9,6 +9,8 @@ SRCS = minishell.c \
 		lexer/token_functions.c \
 		lexer/free_tokens.c \
 		parser/parser.c \
+		get_commands.c \
+		pipe_process.c \
 		parser/syntax_parser.c \
 		parser/parser_functions.c
 
