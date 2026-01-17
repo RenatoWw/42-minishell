@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 02:33:32 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 06:37:45 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,11 @@ void	free_all(t_mini *mini)
 	free(mini->input);
 }
 
+// multiplos fds
+// ls > file1 > file 2 > file
+// é preciso fechar o anterior, verificar se o stdin ou stdou mudou
+// se sim, fechar ele e abrir novamente, para não ter fd leak
+
 int	main(int argc, char **argv)
 {
 	t_mini	mini;
@@ -95,6 +100,11 @@ int	main(int argc, char **argv)
 		printf("input: %s\n", mini.input);
 		mini.tokens = assign_tokens(&mini);
 		mini.cmd = parse_tokens(mini.tokens, &mini.exit_code);
+		if (mini.cmd == NULL)
+		{
+			free_all(&mini);
+			return (1);
+		}
 		print_cmd_list(mini.cmd);
 		free_all(&mini);
 	}

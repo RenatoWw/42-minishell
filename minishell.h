@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 01:32:12 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 06:29:23 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-#include <fcntl.h>
-#include <sys/stat.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
 # include "includes/libft/libft.h"
 
 # define RED "\033[31m"
@@ -90,18 +91,18 @@ t_cmd		*create_node(char **cmd_args);
 void		insert_cmd_back(t_cmd **head, t_cmd *newnode);
 void		print_cmd_list(t_cmd *cmd_list);
 void		free_cmds(t_cmd *cmd_list);
-void		fill_cmd_data(t_cmd *new_cmd, t_token **temp);
+int			fill_cmd_data(t_cmd *new_cmd, t_token **temp);
 
 /*execute*/
 
-t_cmd	*cmd_new(void);
-void	cmd_add_back(t_cmd **list, t_cmd *new);
-void	add_arg(t_cmd *cmd, char *value);
-void	handle_redirect_out(t_cmd *cmd, char *file);
-char	*find_cmd_path(char *cmd, char **envp);
-void	child_process(t_cmd *cmd, int *pipefd, char **envp);
-void	parent_process(t_cmd *cmd, int *pipefd);
-void	wait_all(t_cmd *cmd);
-void	execute_cmds(t_cmd *cmd_list, char **envp);
+t_cmd		*cmd_new(void);
+void		cmd_add_back(t_cmd **list, t_cmd *new);
+void		add_arg(t_cmd *cmd, char *value);
+void		handle_redirect_out(t_cmd *cmd, char *file);
+char		*find_cmd_path(char *cmd, char **envp);
+void		child_process(t_cmd *cmd, int *pipefd, char **envp);
+void		parent_process(t_cmd *cmd, int *pipefd);
+void		wait_all(t_cmd *cmd);
+void		execute_cmds(t_cmd *cmd_list, char **envp);
 
 #endif
