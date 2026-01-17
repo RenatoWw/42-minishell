@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:44:31 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/14 16:50:18 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:16:50 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,29 @@ t_cmd	*create_node(char **cmd_args)
 	return (node);
 }
 
-void	insert_args_back(t_cmd **head, char **cmd_args)
+void	print_cmd_list(t_cmd *cmd_list)
 {
-	t_cmd	*newnode;
+	t_cmd	*temp;
+	int		i;
+
+	if (!cmd_list)
+		return ;
+	temp = cmd_list;
+	while (temp != NULL)
+	{
+		i = 0;
+		printf("node t_cmd-> ");
+		while (temp->cmd_args[i])
+			printf(" \"%s\" ", temp->cmd_args[i++]);
+		printf("\n");
+		temp = temp->next;
+	}
+}
+
+void	insert_cmd_back(t_cmd **head, t_cmd *newnode)
+{
 	t_cmd	*temp;
 
-	newnode = create_node(cmd_args);
 	if (!newnode)
 		return ;
 	if (!(*head))
@@ -46,4 +63,29 @@ void	insert_args_back(t_cmd **head, char **cmd_args)
 	temp->next = newnode;
 	newnode->next = NULL;
 	newnode->prev = temp;
+}
+
+void	free_cmds(t_cmd *cmd_list)
+{
+	t_cmd	*temp;
+	int		i;
+
+	if (!cmd_list)
+		return ;
+	while (cmd_list != NULL)
+	{
+		temp = cmd_list->next;
+		if (cmd_list->cmd_args)
+		{
+			i = 0;
+			while (cmd_list->cmd_args[i])
+				free(cmd_list->cmd_args[i++]);
+			free(cmd_list->cmd_args);
+		}
+		if (cmd_list->cmd_path)
+			free(cmd_list->cmd_path);
+		free(cmd_list);
+		cmd_list = temp;
+	}
+	free(cmd_list);
 }

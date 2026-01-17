@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:52:59 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/14 14:53:20 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 02:17:00 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ int	invalid_red(t_token *temp)
 		return (print_error(NULL));
 	return (0);
 }
-
 
 int	verify_syntax(t_token *token_list, int *exit_code)
 {

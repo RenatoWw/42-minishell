@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/14 16:50:22 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 01:32:12 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,9 @@ int			print_error(char *token_value);
 int			invalid_pipe(t_token *temp);
 int			verify_syntax(t_token *token_list, int *exit_code);
 t_cmd		*create_node(char **cmd_args);
-void		insert_args_back(t_cmd **head, char **cmd_args);
+void		insert_cmd_back(t_cmd **head, t_cmd *newnode);
+void		print_cmd_list(t_cmd *cmd_list);
+void		free_cmds(t_cmd *cmd_list);
+void		fill_cmd_data(t_cmd *new_cmd, t_token **temp);
 
 #endif
