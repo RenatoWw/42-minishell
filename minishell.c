@@ -70,12 +70,21 @@
 
 void	free_all(t_mini *mini)
 {
-	free_tokens(mini->tokens);
-	free_cmds(mini->cmd);
-	free(mini->input);
+	if (mini->tokens)
+		free_tokens(mini->tokens);
+	if (mini->cmd)
+		free_cmds(mini->cmd);
+	if (mini->input)
+		free(mini->input);
 }
 
-int	main(int argc, char **argv)
+void	restore_stdio(t_mini *mini)
+{
+	dup2(mini->original_stdin, STDIN_FILENO);
+	dup2(mini->original_stdout, STDOUT_FILENO);
+}
+
+/*int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;
 
@@ -85,19 +94,40 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	using_history();
+	mini.original_stdin = dup(STDIN_FILENO);
+	mini.original_stdout = dup(STDOUT_FILENO);
 	while (1)
 	{
+		mini.tokens = NULL;
+		mini.cmd = NULL;
+		mini.input = NULL;
+		mini.exit_code = 0;
+
 		mini.input = readline(GREEN "minishell> " RESET);
 		if (!mini.input)
 			break ;
 		if (ft_strncmp(mini.input, "", 2))
 			add_history(mini.input);
-		printf("input: %s\n", mini.input);
 		mini.tokens = assign_tokens(&mini);
 		mini.cmd = parse_tokens(mini.tokens, &mini.exit_code);
-		print_cmd_list(mini.cmd);
+		if (mini.cmd)
+			execute_cmds(mini.cmd, envp);
+		restore_stdio(&mini);
 		free_all(&mini);
 	}
 	clear_history();
+	return (0);
+}
+	*/
+
+int	main(int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+
+	test_pipe(envp);
+	test_redirect(envp);
+	test_input(envp);
+
 	return (0);
 }

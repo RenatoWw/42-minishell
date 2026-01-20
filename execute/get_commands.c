@@ -33,10 +33,12 @@ void	cmd_add_back(t_cmd **list, t_cmd *new)
 {
 	t_cmd	*tmp;
 
+	if (!list || !new)
+		return ;
 	if (!*list)
 	{
 		*list = new;
-		return;
+		return ;
 	}
 	tmp = *list;
 	while (tmp->next)
@@ -50,6 +52,9 @@ void	add_arg(t_cmd *cmd, char *value)
 	int		i;
 	int		j;
 	char	**new;
+
+	if (!cmd || !value)
+		return ;
 
 	i = 0;
 	while (cmd->cmd_args && cmd->cmd_args[i])
@@ -66,14 +71,21 @@ void	add_arg(t_cmd *cmd, char *value)
 		j++;
 	}
 	new[i] = ft_strdup(value);
+	if (!new[i])
+	{
+		free(new);
+		return ;
+	}
 	new[i + 1] = NULL;
-
 	free(cmd->cmd_args);
 	cmd->cmd_args = new;
 }
 
 void	handle_redirect_out(t_cmd *cmd, char *file)
 {
+	if (!cmd || !file)
+		return ;
+
 	if (cmd->fd_out != STDOUT_FILENO)
 		close(cmd->fd_out);
 
@@ -88,11 +100,11 @@ char	*find_cmd_path(char *cmd, char **envp)
 	char	*full;
 	int		i;
 
-	i = 0;
-	if (!cmd)
+	if (!cmd || !envp)
 		return (NULL);
 	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
+	i = 0;
 	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5))
 		i++;
 	if (!envp[i])
@@ -104,7 +116,11 @@ char	*find_cmd_path(char *cmd, char **envp)
 	while (paths[i])
 	{
 		full = ft_strjoin(paths[i], "/");
+		if (!full)
+			break ;
 		full = ft_strjoin_free(full, cmd);
+		if (!full)
+			break ;
 		if (access(full, X_OK) == 0)
 		{
 			free_split(paths);
@@ -116,5 +132,3 @@ char	*find_cmd_path(char *cmd, char **envp)
 	free_split(paths);
 	return (NULL);
 }
-
-

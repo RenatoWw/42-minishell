@@ -14,7 +14,7 @@
 
 void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 {
-	if (!cmd->cmd_args || !cmd->cmd_args[0])
+	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
 		exit(0);
 
 	if (cmd->fd_in != STDIN_FILENO)
@@ -48,8 +48,15 @@ void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 
 void	parent_process(t_cmd *cmd, int *pipefd)
 {
+	if (!cmd)
+		return ;
+
 	if (cmd->fd_in != STDIN_FILENO)
 		close(cmd->fd_in);
+
+	if (cmd->fd_out != STDOUT_FILENO)
+		close(cmd->fd_out);
+
 	if (cmd->next)
 	{
 		close(pipefd[1]);
@@ -77,11 +84,17 @@ void	execute_cmds(t_cmd *cmd_list, char **envp)
 		if (cmd->next)
 		{
 			if (pipe(pipefd) == -1)
-				return (perror("pipe"));
+			{
+				perror("pipe");
+				return ;
+			}
 		}
 		cmd->process_pid = fork();
 		if (cmd->process_pid < 0)
-			return (perror("fork"));
+		{
+			perror("fork");
+			return ;
+		}
 		if (cmd->process_pid == 0)
 			child_process(cmd, pipefd, envp);
 		else
