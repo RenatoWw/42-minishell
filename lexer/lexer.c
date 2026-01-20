@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:20:34 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/20 15:43:40 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:33:40 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	handle_word(t_token **token_list, char *temp, int *i)
 	int		start;
 
 	start = *i;
-	while ((temp[*i] != ' ' && !is_operator(&temp[*i])) && temp[*i])
+	while ((is_space(temp[*i]) == 0 && !is_operator(&temp[*i])) && temp[*i])
 		(*i)++;
 	substr = ft_substr(temp, start, *i - start);
 	insert_back(token_list, substr, TOKEN_WORD);
@@ -85,7 +85,7 @@ t_token	*assign_tokens(t_mini *mini)
 	i = 0;
 	while (temp[i])
 	{
-		while (temp[i] == ' ' || (temp[i] >= 9 && temp[i] <= 13))
+		while (is_space(temp[i]) == 1)
 			i++;
 		if (!temp[i])
 			break ;

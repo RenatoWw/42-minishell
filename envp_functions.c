@@ -1,68 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_functions.c                                  :+:      :+:    :+:   */
+/*   envp_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/08 19:17:53 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/20 17:18:50 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/01/20 17:46:16 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/01/20 17:46:39 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
-t_token	*create_token(char *value, t_token_type type)
+t_env	*create_envp_node(char *key, char *value)
 {
-	t_token	*node;
+	t_env	*node;
 
-	node = malloc(sizeof(t_token));
+	node = malloc(sizeof(t_env));
 	if (!node)
 		return (NULL);
+	node->key = key;
 	node->value = value;
-	node->type = type;
 	node->prev = NULL;
 	node->next = NULL;
 	return (node);
 }
 
-void	print_tokens(t_token *head)
+void	insert_key_back(t_env **head, char *key, char *value)
 {
-	t_token	*temp;
+	t_env	*newnode;
+	t_env	*temp;
 
-	if (!head)
-		return ;
-	temp = head;
-	while (temp != NULL)
-	{
-		printf("Value: %s\nType: %d\n", temp->value, temp->type);
-		temp = temp->next;
-	}
-}
-
-int	list_size(t_token *head)
-{
-	t_token	*temp;
-	int		i;
-
-	i = 0;
-	temp = head;
-	if (!temp)
-		return (i);
-	while (temp != NULL)
-	{
-		temp = temp->next;
-		i++;
-	}
-	return (i);
-}
-
-void	insert_back(t_token **head, char *value, t_token_type type)
-{
-	t_token	*newnode;
-	t_token	*temp;
-
-	newnode = create_token(value, type);
+	newnode = create_envp_node(key, value);
 	if (!newnode)
 		return ;
 	if (!(*head))
@@ -79,3 +48,20 @@ void	insert_back(t_token **head, char *value, t_token_type type)
 	newnode->next = NULL;
 	newnode->prev = temp;
 }
+
+void	copy_envp(t_mini *mini, char **envp)
+{
+	t_env	*env;
+	int		i;
+
+	i = 0;
+	env = create_envp_node(NULL, NULL);
+	mini->env_list = env;
+	// printf("oi\n");
+	while (envp[i] != NULL)
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
+}
+
