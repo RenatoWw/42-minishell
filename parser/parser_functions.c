@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:44:31 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 02:16:50 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/17 06:18:28 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	print_cmd_list(t_cmd *cmd_list)
 		i = 0;
 		printf("node t_cmd-> ");
 		while (temp->cmd_args[i])
-			printf(" \"%s\" ", temp->cmd_args[i++]);
+			printf("\"%s\" ", temp->cmd_args[i++]);
 		printf("\n");
 		temp = temp->next;
 	}
