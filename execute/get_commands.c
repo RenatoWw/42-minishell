@@ -6,11 +6,11 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 13:04:03 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/17 02:50:51 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/20 12:54:34 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 t_cmd	*cmd_new(void)
 {
@@ -55,15 +55,12 @@ void	add_arg(t_cmd *cmd, char *value)
 
 	if (!cmd || !value)
 		return ;
-
 	i = 0;
 	while (cmd->cmd_args && cmd->cmd_args[i])
 		i++;
-
 	new = malloc(sizeof(char *) * (i + 2));
 	if (!new)
 		return ;
-
 	j = 0;
 	while (j < i)
 	{
@@ -85,10 +82,8 @@ void	handle_redirect_out(t_cmd *cmd, char *file)
 {
 	if (!cmd || !file)
 		return ;
-
 	if (cmd->fd_out != STDOUT_FILENO)
 		close(cmd->fd_out);
-
 	cmd->fd_out = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (cmd->fd_out < 0)
 		perror(file);

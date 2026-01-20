@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 06:37:45 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/20 12:56:41 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,25 +84,34 @@ void	restore_stdio(t_mini *mini)
 	dup2(mini->original_stdout, STDOUT_FILENO);
 }
 
-/*int	main(int argc, char **argv, char **envp)
+void	set_mini_args(t_mini *mini)
 {
-	t_mini	mini;
+	mini->tokens = NULL;
+	mini->cmd = NULL;
+	mini->input = NULL;
+	mini->exit_code = 0;
+}
 
+void	validate_argc(int argc, char **argv)
+{
 	if (argc != 1 && argv[1])
 	{
 		printf("Usage: ./minishell\n");
-		return (1);
+		exit(1);
 	}
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_mini	mini;
+
+	validate_argc(argc, argv);
 	using_history();
 	mini.original_stdin = dup(STDIN_FILENO);
 	mini.original_stdout = dup(STDOUT_FILENO);
 	while (1)
 	{
-		mini.tokens = NULL;
-		mini.cmd = NULL;
-		mini.input = NULL;
-		mini.exit_code = 0;
-
+		set_mini_args(&mini);
 		mini.input = readline(GREEN "minishell> " RESET);
 		if (!mini.input)
 			break ;
@@ -118,16 +127,13 @@ void	restore_stdio(t_mini *mini)
 	clear_history();
 	return (0);
 }
-	*/
 
-int	main(int argc, char **argv, char **envp)
-{
-	(void)argc;
-	(void)argv;
-
-	test_pipe(envp);
-	test_redirect(envp);
-	test_input(envp);
-
-	return (0);
-}
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	(void)argc;
+// 	(void)argv;
+// 	test_pipe(envp);
+// 	test_redirect(envp);
+// 	test_input(envp);
+// 	return (0);
+// }

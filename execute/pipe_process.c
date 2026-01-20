@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_process.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapinhei <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 13:04:03 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/15 13:04:06 by dapinhei         ###   ########.fr       */
+/*   Updated: 2026/01/20 12:53:46 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 {
 	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
 		exit(0);
-
 	if (cmd->fd_in != STDIN_FILENO)
 	{
 		dup2(cmd->fd_in, STDIN_FILENO);
@@ -33,7 +32,6 @@ void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		close(cmd->fd_out);
 	}
-
 	cmd->cmd_path = find_cmd_path(cmd->cmd_args[0], envp);
 	if (!cmd->cmd_path)
 	{
@@ -50,13 +48,10 @@ void	parent_process(t_cmd *cmd, int *pipefd)
 {
 	if (!cmd)
 		return ;
-
 	if (cmd->fd_in != STDIN_FILENO)
 		close(cmd->fd_in);
-
 	if (cmd->fd_out != STDOUT_FILENO)
 		close(cmd->fd_out);
-
 	if (cmd->next)
 	{
 		close(pipefd[1]);
