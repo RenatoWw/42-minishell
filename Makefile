@@ -9,10 +9,12 @@ SRCS = minishell.c \
 		lexer/token_functions.c \
 		lexer/free_tokens.c \
 		parser/parser.c \
+		execute/get_commands.c \
+		execute/pipe_process.c \
+		execute/utils_exec.c \
 		parser/syntax_parser.c \
-		parser/parser_functions.c
-# 		execute/get_commands.c \
-# 		execute/pipe_process.c \
+		parser/parser_functions.c \
+		execute/teste_execute.c
 
 OBJ_DIR = objs/
 OBJS = $(addprefix $(OBJ_DIR), $(SRCS:.c=.o))

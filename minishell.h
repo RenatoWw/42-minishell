@@ -93,16 +93,27 @@ void		print_cmd_list(t_cmd *cmd_list);
 void		free_cmds(t_cmd *cmd_list);
 int			fill_cmd_data(t_cmd *new_cmd, t_token **temp);
 
+/*main*/
+void	restore_stdio(t_mini *mini);
+
 /*execute*/
 
-t_cmd		*cmd_new(void);
-void		cmd_add_back(t_cmd **list, t_cmd *new);
-void		add_arg(t_cmd *cmd, char *value);
-void		handle_redirect_out(t_cmd *cmd, char *file);
-char		*find_cmd_path(char *cmd, char **envp);
-void		child_process(t_cmd *cmd, int *pipefd, char **envp);
-void		parent_process(t_cmd *cmd, int *pipefd);
-void		wait_all(t_cmd *cmd);
-void		execute_cmds(t_cmd *cmd_list, char **envp);
+t_cmd	*cmd_new(void);
+void	cmd_add_back(t_cmd **list, t_cmd *new);
+void	add_arg(t_cmd *cmd, char *value);
+void	handle_redirect_out(t_cmd *cmd, char *file);
+char	*find_cmd_path(char *cmd, char **envp);
+void	child_process(t_cmd *cmd, int *pipefd, char **envp);
+void	parent_process(t_cmd *cmd, int *pipefd);
+void	wait_all(t_cmd *cmd);
+void	execute_cmds(t_cmd *cmd_list, char **envp);
+void	free_split(char **split);
+char	*ft_strjoin_free(char *s1, char *s2);
 
 #endif
+
+/*teste execute teste_execute.c */
+char	**make_args(char *a, char *b, char *c);
+void	test_pipe(char **envp);
+void	test_redirect(char **envp);
+void	test_input(char **envp);
