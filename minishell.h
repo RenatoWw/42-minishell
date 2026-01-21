@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/20 12:57:07 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/21 18:31:34 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,16 @@ typedef struct s_mini
 	int		original_stdout;
 }	t_mini;
 
+/* Lexer functions */
 t_token		*create_token(char *value, t_token_type type);
 int			list_size(t_token *head);
 void		insert_back(t_token **head, char *value, t_token_type type);
 t_token		*assign_tokens(t_mini *mini);
 void		print_tokens(t_token *head);
 void		free_tokens(t_token *token_list);
+int			is_space(char chr);
 
+/* Parser functions */
 t_cmd		*parse_tokens(t_token *token_list, int *exit_code);
 int			print_error(char *token_value);
 int			invalid_pipe(t_token *temp);
@@ -93,11 +96,20 @@ void		print_cmd_list(t_cmd *cmd_list);
 void		free_cmds(t_cmd *cmd_list);
 int			fill_cmd_data(t_cmd *new_cmd, t_token **temp);
 
-/*main*/
+/* Expander functions */
+t_env		*create_envp_node(char *key, char *value);
+void		copy_envp(t_mini *mini, char **envp);
+void		insert_key_back(t_env **head, char *key, char *value);
+void		free_envp(t_env *env_list);
+void		expand_variables(t_mini *mini, char **envp);
+
+/* Minishell utils */
 void		restore_stdio(t_mini *mini);
+void		free_all(t_mini *mini);
+void		set_mini_args(t_mini *mini);
+void		validate_argc(int argc, char **argv);
 
 /*execute*/
-
 t_cmd		*cmd_new(void);
 void		cmd_add_back(t_cmd **list, t_cmd *new);
 void		add_arg(t_cmd *cmd, char *value);
@@ -115,5 +127,8 @@ char		**make_args(char *a, char *b, char *c);
 void		test_pipe(char **envp);
 void		test_redirect(char **envp);
 void		test_input(char **envp);
+
+/* Test Lexer and Parser */
+void		test_lexer(t_mini *mini);
 
 #endif

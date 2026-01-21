@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:37:55 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 06:36:28 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/20 15:44:03 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,15 @@ int	handle_redirections(t_token *temp, t_cmd **new_cmd)
 {
 	if (temp->type == TOKEN_REDIRECT_OUT)
 	{
-		(*new_cmd)->fd_out = open(temp->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		(*new_cmd)->fd_out = open(
+				temp->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if ((*new_cmd)->fd_out == -1)
 			return (1);
 	}
 	else if (temp->type == TOKEN_APPEND)
 	{
-		(*new_cmd)->fd_out = open(temp->next->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		(*new_cmd)->fd_out = open(
+				temp->next->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if ((*new_cmd)->fd_out == -1)
 			return (1);
 	}

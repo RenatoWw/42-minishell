@@ -14,17 +14,45 @@ SRCS = minishell.c \
 		execute/utils_exec.c \
 		parser/syntax_parser.c \
 		parser/parser_functions.c \
-		execute/teste_execute.c
+		minishell_utils.c \
+		expander/envp_functions.c \
+		expander/expander.c
+# 		test/test_execute.c \
+# 		test/test_lexer.c \
+# 		test/test_main.c \
+
+SRCS_TEST = test/test_main.c \
+			lexer/lexer.c \
+			lexer/token_functions.c \
+			lexer/free_tokens.c \
+			parser/parser.c \
+			execute/get_commands.c \
+			execute/pipe_process.c \
+			execute/utils_exec.c \
+			parser/syntax_parser.c \
+			parser/parser_functions.c \
+			minishell_utils.c \
+			expander/envp_functions.c \
+			expander/expander.c \
+			test/test_execute.c \
+			test/test_lexer.c \
+
+NAME_TEST = tester
 
 OBJ_DIR = objs/
 OBJS = $(addprefix $(OBJ_DIR), $(SRCS:.c=.o))
-OBJS_BONUS = $(addprefix $(OBJ_DIR), $(SRCS_BONUS:.c=.o))
+OBJS_TEST = $(addprefix $(OBJ_DIR), $(SRCS_TEST:.c=.o))
 
 $(OBJ_DIR)%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 all: $(NAME)
+
+test: $(NAME_TEST)
+
+$(NAME_TEST): $(OBJS_TEST) $(LIBFT_A)
+	$(CC) $(CFLAGS) $(OBJS_TEST) -lreadline $(LIBFT_A) -o $(NAME_TEST) 
 
 $(NAME): $(OBJS) $(LIBFT_A)
 	$(CC) $(CFLAGS) $(OBJS) -lreadline $(LIBFT_A) -o $(NAME)
@@ -42,6 +70,7 @@ clean:
 fclean: clean
 	$(MAKE) -C $(LIBFT) fclean
 	rm -f $(NAME)
+	rm -f $(NAME_TEST)
 
 re: fclean all
 

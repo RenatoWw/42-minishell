@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 19:17:53 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/14 16:43:49 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:18:50 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	print_tokens(t_token *head)
 	temp = head;
 	while (temp != NULL)
 	{
-		printf("Value: %s \t\t --Type: %d\n", temp->value, temp->type);
+		printf("Value: %s\nType: %d\n", temp->value, temp->type);
 		temp = temp->next;
 	}
 }

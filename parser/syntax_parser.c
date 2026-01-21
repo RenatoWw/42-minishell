@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:52:59 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 02:17:00 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/20 16:04:49 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	print_error(char *token_value)
 {
 	ft_putstr_fd(RED, 2);
-	ft_putstr_fd("minishell: syntax error near unexpected token '", 2);
+	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 	if (!token_value)
 		ft_putstr_fd("newline", 2);
 	else
@@ -50,7 +50,9 @@ int	invalid_pipe(t_token *temp)
 
 int	invalid_red(t_token *temp)
 {
-	if (temp->type == TOKEN_REDIRECT_IN && temp->next == NULL)
+	if (temp->type == TOKEN_APPEND && temp->next == NULL)
+		return (print_error(NULL));
+	else if (temp->type == TOKEN_REDIRECT_IN && temp->next == NULL)
 		return (print_error(NULL));
 	else if (temp->type == TOKEN_REDIRECT_OUT && temp->next == NULL)
 		return (print_error(NULL));
@@ -60,8 +62,6 @@ int	invalid_red(t_token *temp)
 	else if (temp->type == TOKEN_REDIRECT_OUT
 		&& temp->next->type == TOKEN_APPEND)
 		return (print_error(">>"));
-	else if (temp->type == TOKEN_APPEND && temp->next == NULL)
-		return (print_error(NULL));
 	else if (temp->type == TOKEN_HEREDOC && temp->prev == NULL)
 		return (print_error(NULL));
 	else if (temp->type == TOKEN_HEREDOC && temp->next == NULL)

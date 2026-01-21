@@ -1,38 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_tokens.c                                      :+:      :+:    :+:   */
+/*   test_main.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/09 17:06:10 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/20 18:19:15 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/01/20 17:00:26 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/01/20 18:19:41 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_tokens(t_token *token_list)
+int	main(int argc, char **argv, char **envp)
 {
-	t_token	*temp;
+	t_mini	mini;
 
-	if (!token_list)
-		return ;
-	while (token_list != NULL)
-	{
-		temp = token_list->next;
-		if (token_list->value)
-			free(token_list->value);
-		free(token_list);
-		token_list = temp;
-	}
-	free(token_list);
-}
-
-int	is_space(char chr)
-{
-	if (chr == ' ' || (chr >= 9 && chr <= 13))
-		return (1);
-	else
-		return (0);
+	(void)argc;
+	(void)argv;
+	test_lexer(&mini);
+	test_pipe(envp);
+	test_redirect(envp);
+	test_input(envp);
 }
