@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renato <renato@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/21 19:21:02 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/25 13:34:31 by renato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,19 @@
 // tratar aspas coladas no lexer, o echo "hello"'world' são dois tokens apenas
 // terminar os testes de lexer e de parser
 // expander
+// função quote removal
+
+void	executioner(t_mini *mini, char **envp)
+{
+	if (mini->cmd)
+	{
+		expand_variables(mini, envp);
+		if (check_if_builtin(mini) == 1)
+			execute_builtin(mini);
+		else if (mini->cmd)
+			execute_cmds(mini->cmd, envp);	
+	}
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -37,9 +50,7 @@ int	main(int argc, char **argv, char **envp)
 			add_history(mini.input);
 		mini.tokens = assign_tokens(&mini);
 		mini.cmd = parse_tokens(mini.tokens, &mini.exit_code);
-		expand_variables(&mini, envp);
-		if (mini.cmd)
-			execute_cmds(mini.cmd, envp);
+		executioner(&mini, envp);
 		restore_stdio(&mini);
 		free_all(&mini);
 	}

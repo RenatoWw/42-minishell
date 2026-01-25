@@ -16,7 +16,8 @@ SRCS = minishell.c \
 		parser/parser_functions.c \
 		minishell_utils.c \
 		expander/envp_functions.c \
-		expander/expander.c
+		expander/expander.c \
+		builtins/utils.c \
 # 		test/test_execute.c \
 # 		test/test_lexer.c \
 # 		test/test_main.c \
@@ -34,6 +35,7 @@ SRCS_TEST = test/test_main.c \
 			minishell_utils.c \
 			expander/envp_functions.c \
 			expander/expander.c \
+			builtins/utils.c \
 			test/test_execute.c \
 			test/test_lexer.c \
 
