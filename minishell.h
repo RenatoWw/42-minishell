@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/21 18:31:34 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 18:08:58 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,9 @@ int			verify_syntax(t_token *token_list, int *exit_code);
 t_cmd		*create_node(char **cmd_args);
 void		insert_cmd_back(t_cmd **head, t_cmd *newnode);
 void		print_cmd_list(t_cmd *cmd_list);
-void		free_cmds(t_cmd *cmd_list);
+void		*free_cmds(t_cmd *cmd_list);
 int			fill_cmd_data(t_cmd *new_cmd, t_token **temp);
+int			handle_redirections(t_token *temp, t_cmd **new_cmd);
 
 /* Expander functions */
 t_env		*create_envp_node(char *key, char *value);
@@ -122,15 +123,12 @@ void		execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini);
 void		free_split(char **split);
 char		*ft_strjoin_free(char *s1, char *s2);
 int			handle_heredoc(t_cmd *cmd, char *delimiter);
-
+char		*search_path(char *cmd, char **paths);
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);
 void		test_pipe(char **envp);
 void		test_redirect(char **envp);
 void		test_input(char **envp);
-
-/* Test Lexer and Parser */
-void		test_lexer(t_mini *mini);
 
 #endif

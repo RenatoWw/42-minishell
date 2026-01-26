@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:44:31 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/17 06:18:28 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 17:49:03 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,33 @@ t_cmd	*create_node(char **cmd_args)
 	return (new);
 }
 
+int	handle_redirections(t_token *temp, t_cmd **new_cmd)
+{
+	if (temp->type == TOKEN_REDIRECT_OUT)
+	{
+		(*new_cmd)->fd_out = open(
+				temp->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if ((*new_cmd)->fd_out == -1)
+			return (1);
+	}
+	else if (temp->type == TOKEN_APPEND)
+	{
+		(*new_cmd)->fd_out = open(
+				temp->next->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if ((*new_cmd)->fd_out == -1)
+			return (1);
+	}
+	else if (temp->type == TOKEN_REDIRECT_IN)
+	{
+		(*new_cmd)->fd_in = open(temp->next->value, O_RDONLY);
+		if ((*new_cmd)->fd_in == -1)
+			return (1);
+	}
+	else if (temp->type == TOKEN_HEREDOC)
+		if (handle_heredoc(*new_cmd, temp->next->value) != 0)
+			return (1);
+	return (0);
+}
 
 void	print_cmd_list(t_cmd *cmd_list)
 {
@@ -70,13 +97,13 @@ void	insert_cmd_back(t_cmd **head, t_cmd *newnode)
 	newnode->prev = temp;
 }
 
-void	free_cmds(t_cmd *cmd_list)
+void	*free_cmds(t_cmd *cmd_list)
 {
 	t_cmd	*temp;
 	int		i;
 
 	if (!cmd_list)
-		return ;
+		return (NULL);
 	while (cmd_list != NULL)
 	{
 		temp = cmd_list->next;
@@ -93,4 +120,5 @@ void	free_cmds(t_cmd *cmd_list)
 		cmd_list = temp;
 	}
 	free(cmd_list);
+	return (NULL);
 }

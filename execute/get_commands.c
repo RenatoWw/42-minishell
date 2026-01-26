@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 13:04:03 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/20 12:54:34 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 18:08:48 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,9 @@ void	add_arg(t_cmd *cmd, char *value)
 	new = malloc(sizeof(char *) * (i + 2));
 	if (!new)
 		return ;
-	j = 0;
-	while (j < i)
-	{
+	j = -1;
+	while (++j < i)
 		new[j] = cmd->cmd_args[j];
-		j++;
-	}
 	new[i] = ft_strdup(value);
 	if (!new[i])
 	{
@@ -72,6 +69,31 @@ void	handle_redirect_out(t_cmd *cmd, char *file)
 		perror(file);
 }
 
+char	*search_path(char *cmd, char **paths)
+{
+	char	*full;
+	int		i;
+
+	i = 0;
+	while (paths[i])
+	{
+		full = ft_strjoin(paths[i], "/");
+		if (!full)
+			break ;
+		full = ft_strjoin_free(full, cmd);
+		if (!full)
+			break ;
+		if (access(full, X_OK) == 0)
+		{
+			free_split(paths);
+			return (full);
+		}
+		free(full);
+		i++;
+	}
+	return (NULL);
+}
+
 char	*find_cmd_path(char *cmd, char **envp)
 {
 	char	**paths;
@@ -90,23 +112,10 @@ char	*find_cmd_path(char *cmd, char **envp)
 	paths = ft_split(envp[i] + 5, ':');
 	if (!paths)
 		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		full = ft_strjoin(paths[i], "/");
-		if (!full)
-			break ;
-		full = ft_strjoin_free(full, cmd);
-		if (!full)
-			break ;
-		if (access(full, X_OK) == 0)
-		{
-			free_split(paths);
-			return (full);
-		}
-		free(full);
-		i++;
-	}
-	free_split(paths);
+	full = search_path(cmd, paths);
+	if (!full)
+		free_split(paths);
+	else
+		return (full);
 	return (NULL);
 }

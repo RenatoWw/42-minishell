@@ -6,20 +6,21 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 13:04:03 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/20 12:53:46 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 18:10:12 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+// printf(
+// "DEBUG CHILD [%s] fd_in=%d fd_out=%d\n",
+// cmd->cmd_args[0],
+// cmd->fd_in,
+// cmd->fd_out
+// );
+
 void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 {
-	printf(
-	"DEBUG CHILD [%s] fd_in=%d fd_out=%d\n",
-	cmd->cmd_args[0],
-	cmd->fd_in,
-	cmd->fd_out
-	);
 	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
 		exit(0);
 	if (cmd->fd_in != STDIN_FILENO)
@@ -66,7 +67,7 @@ void	parent_process(t_cmd *cmd, int *pipefd)
 
 void	wait_all(t_cmd *cmd, t_mini *mini)
 {
-	int	status;
+	int		status;
 	t_cmd	*last;
 
 	if (!cmd || !mini)
@@ -87,7 +88,6 @@ void	wait_all(t_cmd *cmd, t_mini *mini)
 		cmd = cmd->next;
 	}
 }
-
 
 void	execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini)
 {
@@ -123,7 +123,6 @@ void	execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini)
 		{
 			if (prev_fd != -1)
 				close(prev_fd);
-
 			if (cmd->next)
 			{
 				close(pipefd[1]);

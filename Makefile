@@ -19,7 +19,6 @@ SRCS = minishell.c \
 		expander/expander.c \
 		execute/heredoc.c
 # 		test/test_execute.c \
-# 		test/test_lexer.c \
 # 		test/test_main.c \
 
 SRCS_TEST = test/test_main.c \
@@ -36,7 +35,6 @@ SRCS_TEST = test/test_main.c \
 			expander/envp_functions.c \
 			expander/expander.c \
 			test/test_execute.c \
-			test/test_lexer.c \
 
 NAME_TEST = tester
 
