@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   envp_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renato <renato@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:46:16 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/21 18:12:01 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/25 13:27:24 by renato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,12 @@ void	copy_envp(t_mini *mini, char **envp)
 			j++;
 		key = ft_substr(envp[i], 0, j);
 		value = ft_substr(envp[i], ++j, ft_strlen(envp[i]));
-		if (ft_strncmp(key, "SHLVL", 6) == 1)
+		if (ft_strncmp(key, "SHLVL", 10) == 0)
 		{
 			value_int = ft_atoi(value);
 			free(value);
-			value = ft_itoa(++value_int);
+			value_int++;
+			value = ft_itoa(value_int);
 		}
 		insert_key_back(&mini->env_list, key, value);
 		i++;

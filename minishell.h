@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: renato <renato@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
 /*   Updated: 2026/01/26 18:08:58 by ranhaia-         ###   ########.fr       */
@@ -109,6 +109,11 @@ void		restore_stdio(t_mini *mini);
 void		free_all(t_mini *mini);
 void		set_mini_args(t_mini *mini);
 void		validate_argc(int argc, char **argv);
+
+/* Built-ins */
+int			check_if_builtin(t_mini *mini);
+void		execute_builtin(t_mini *mini);
+void		env_builtin(t_mini *mini);
 
 /*execute*/
 t_cmd		*cmd_new(void);
