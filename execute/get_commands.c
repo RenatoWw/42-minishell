@@ -12,23 +12,6 @@
 
 #include "../minishell.h"
 
-t_cmd	*cmd_new(void)
-{
-	t_cmd	*cmd;
-
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return (NULL);
-	cmd->cmd_args = NULL;
-	cmd->cmd_path = NULL;
-	cmd->fd_in = STDIN_FILENO;
-	cmd->fd_out = STDOUT_FILENO;
-	cmd->process_pid = -1;
-	cmd->next = NULL;
-	cmd->prev = NULL;
-	return (cmd);
-}
-
 void	cmd_add_back(t_cmd **list, t_cmd *new)
 {
 	t_cmd	*tmp;

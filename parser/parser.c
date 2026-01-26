@@ -12,6 +12,17 @@
 
 #include "../minishell.h"
 
+
+static void	init_cmd(t_cmd *cmd)
+{
+	cmd->fd_in = STDIN_FILENO;
+	cmd->fd_out = STDOUT_FILENO;
+	cmd->cmd_path = NULL;
+	cmd->process_pid = -1;
+	cmd->next = NULL;
+	cmd->prev = NULL;
+}
+
 int	count_cmds(t_token *token_list)
 {
 	t_token	*temp;
@@ -39,8 +50,16 @@ int	count_words(t_token *token_list)
 	{
 		if (temp->type == TOKEN_WORD)
 			len++;
-		if (temp->type >= TOKEN_REDIRECT_IN && temp->type <= TOKEN_HEREDOC)
+		if (temp->type == TOKEN_REDIRECT_IN
+			|| temp->type == TOKEN_REDIRECT_OUT
+			|| temp->type == TOKEN_APPEND
+			|| temp->type == TOKEN_HEREDOC)
+		{
 			temp = temp->next;
+			if (temp)
+				temp = temp->next;
+			continue ;
+		}
 		temp = temp->next;
 	}
 	return (len);
@@ -64,8 +83,13 @@ int	handle_redirections(t_token *temp, t_cmd **new_cmd)
 	}
 	else if (temp->type == TOKEN_REDIRECT_IN)
 	{
-		(*new_cmd)->fd_in = open(temp->next->value, O_RDONLY, 0644);
+		(*new_cmd)->fd_in = open(temp->next->value, O_RDONLY);
 		if ((*new_cmd)->fd_in == -1)
+			return (1);
+	}
+	else if (temp->type == TOKEN_HEREDOC)
+	{
+		if (handle_heredoc(*new_cmd, temp->next->value) != 0)
 			return (1);
 	}
 	return (0);
@@ -75,26 +99,30 @@ int	fill_cmd_data(t_cmd *new_cmd, t_token **temp)
 {
 	int	i;
 
+	if (!new_cmd || !temp || !*temp)
+		return (1);
 	i = 0;
-	while ((*temp) != NULL && (*temp)->type != TOKEN_PIPE)
+	while (*temp && (*temp)->type != TOKEN_PIPE)
 	{
-		if ((*temp)->type == 3 || (*temp)->type == 4)
-		{
-			if (handle_redirections(*temp, &new_cmd) == 1)
-				return (1);
-			*temp = (*temp)->next->next;
-			continue ;
-		}
-		else if ((*temp)->type == TOKEN_REDIRECT_IN
+		if ((*temp)->type == TOKEN_REDIRECT_IN
+			|| (*temp)->type == TOKEN_REDIRECT_OUT
+			|| (*temp)->type == TOKEN_APPEND
 			|| (*temp)->type == TOKEN_HEREDOC)
 		{
+			if (!(*temp)->next)
+				return (1);
 			if (handle_redirections(*temp, &new_cmd) == 1)
 				return (1);
 			*temp = (*temp)->next->next;
 			continue ;
 		}
-		else if ((*temp)->type == TOKEN_WORD)
-			new_cmd->cmd_args[i++] = ft_strdup((*temp)->value);
+		if ((*temp)->type == TOKEN_WORD)
+		{
+			new_cmd->cmd_args[i] = ft_strdup((*temp)->value);
+			if (!new_cmd->cmd_args[i])
+				return (1);
+			i++;
+		}
 		*temp = (*temp)->next;
 	}
 	return (0);
@@ -105,7 +133,6 @@ t_cmd	*parse_tokens(t_token *token_list, int *exit_code)
 	t_cmd	*cmd_list;
 	t_cmd	*new_cmd;
 	t_token	*temp;
-
 	if (!token_list)
 		return (NULL);
 	if (verify_syntax(token_list, exit_code) == 1)
@@ -115,7 +142,12 @@ t_cmd	*parse_tokens(t_token *token_list, int *exit_code)
 	while (temp != NULL)
 	{
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
+		if (!new_cmd)
+			return (NULL);
+		init_cmd(new_cmd);
 		new_cmd->cmd_args = ft_calloc(count_words(temp) + 1, sizeof(char *));
+		if (!new_cmd->cmd_args)
+			return (NULL);
 		if (fill_cmd_data(new_cmd, &temp) == 1)
 		{
 			free_cmds(new_cmd);
@@ -127,3 +159,4 @@ t_cmd	*parse_tokens(t_token *token_list, int *exit_code)
 	}
 	return (cmd_list);
 }
+

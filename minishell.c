@@ -39,7 +39,7 @@ int	main(int argc, char **argv, char **envp)
 		mini.cmd = parse_tokens(mini.tokens, &mini.exit_code);
 		expand_variables(&mini, envp);
 		if (mini.cmd)
-			execute_cmds(mini.cmd, envp);
+			execute_cmds(mini.cmd, envp, &mini);
 		restore_stdio(&mini);
 		free_all(&mini);
 	}

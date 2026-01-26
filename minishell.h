@@ -117,10 +117,12 @@ void		handle_redirect_out(t_cmd *cmd, char *file);
 char		*find_cmd_path(char *cmd, char **envp);
 void		child_process(t_cmd *cmd, int *pipefd, char **envp);
 void		parent_process(t_cmd *cmd, int *pipefd);
-void		wait_all(t_cmd *cmd);
-void		execute_cmds(t_cmd *cmd_list, char **envp);
+void		wait_all(t_cmd *cmd, t_mini *mini);
+void		execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini);
 void		free_split(char **split);
 char		*ft_strjoin_free(char *s1, char *s2);
+int			handle_heredoc(t_cmd *cmd, char *delimiter);
+
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);

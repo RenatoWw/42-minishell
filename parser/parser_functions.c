@@ -14,16 +14,21 @@
 
 t_cmd	*create_node(char **cmd_args)
 {
-	t_cmd	*node;
+	t_cmd	*new;
 
-	node = malloc(sizeof(t_cmd));
-	if (!node)
+	new = malloc(sizeof(t_cmd));
+	if (!new)
 		return (NULL);
-	node->cmd_args = cmd_args;
-	node->prev = NULL;
-	node->next = NULL;
-	return (node);
+	new->cmd_args = cmd_args;
+	new->cmd_path = NULL;
+	new->fd_in = STDIN_FILENO;
+	new->fd_out = STDOUT_FILENO;
+	new->process_pid = -1;
+	new->next = NULL;
+	new->prev = NULL;
+	return (new);
 }
+
 
 void	print_cmd_list(t_cmd *cmd_list)
 {
