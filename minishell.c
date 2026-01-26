@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renato <renato@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/25 13:34:31 by renato           ###   ########.fr       */
+/*   Updated: 2026/01/26 18:47:47 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,7 @@
 // fazer
 // depois pesquisar alternativas para as funções using_history e clear_history
 // essas duas não estão no pdf, tem a rl_clear_history, mas vou ver isso depois
-// tratar aspas coladas no lexer, o echo "hello"'world' são dois tokens apenas
-// terminar os testes de lexer e de parser
-// expander
+// expander no heredoc
 // função quote removal
 
 void	executioner(t_mini *mini, char **envp)
@@ -28,7 +26,7 @@ void	executioner(t_mini *mini, char **envp)
 		if (check_if_builtin(mini) == 1)
 			execute_builtin(mini);
 		else if (mini->cmd)
-			execute_cmds(mini->cmd, envp);	
+			execute_cmds(mini->cmd, envp, mini);
 	}
 }
 

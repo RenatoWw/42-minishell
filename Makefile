@@ -17,7 +17,7 @@ SRCS = minishell.c \
 		minishell_utils.c \
 		expander/envp_functions.c \
 		expander/expander.c \
-		execute/heredoc.c
+		execute/heredoc.c \
 		builtins/utils.c \
 # 		test/test_execute.c \
 # 		test/test_main.c \
