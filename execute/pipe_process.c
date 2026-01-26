@@ -6,11 +6,18 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/15 13:04:03 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/20 12:53:46 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 18:10:12 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+// printf(
+// "DEBUG CHILD [%s] fd_in=%d fd_out=%d\n",
+// cmd->cmd_args[0],
+// cmd->fd_in,
+// cmd->fd_out
+// );
 
 void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 {
@@ -18,18 +25,21 @@ void	child_process(t_cmd *cmd, int *pipefd, char **envp)
 		exit(0);
 	if (cmd->fd_in != STDIN_FILENO)
 	{
-		dup2(cmd->fd_in, STDIN_FILENO);
+		if (dup2(cmd->fd_in, STDIN_FILENO) < 0)
+			perror("dup2 stdin");
 		close(cmd->fd_in);
 	}
 	if (cmd->next)
 	{
-		dup2(pipefd[1], STDOUT_FILENO);
+		if (dup2(pipefd[1], STDOUT_FILENO) < 0)
+			perror("dup2 pipe");
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
 	else if (cmd->fd_out != STDOUT_FILENO)
 	{
-		dup2(cmd->fd_out, STDOUT_FILENO);
+		if (dup2(cmd->fd_out, STDOUT_FILENO) < 0)
+			perror("dup2 strout");
 		close(cmd->fd_out);
 	}
 	cmd->cmd_path = find_cmd_path(cmd->cmd_args[0], envp);
@@ -48,10 +58,6 @@ void	parent_process(t_cmd *cmd, int *pipefd)
 {
 	if (!cmd)
 		return ;
-	if (cmd->fd_in != STDIN_FILENO)
-		close(cmd->fd_in);
-	if (cmd->fd_out != STDOUT_FILENO)
-		close(cmd->fd_out);
 	if (cmd->next)
 	{
 		close(pipefd[1]);
@@ -59,26 +65,47 @@ void	parent_process(t_cmd *cmd, int *pipefd)
 	}
 }
 
-void	wait_all(t_cmd *cmd)
+void	wait_all(t_cmd *cmd, t_mini *mini)
 {
+	int		status;
+	t_cmd	*last;
+
+	if (!cmd || !mini)
+		return ;
+	last = cmd;
+	while (last->next)
+		last = last->next;
 	while (cmd)
 	{
-		waitpid(cmd->process_pid, NULL, 0);
+		waitpid(cmd->process_pid, &status, 0);
+		if (cmd == last)
+		{
+			if (WIFEXITED(status))
+				mini->exit_code = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				mini->exit_code = 128 + WTERMSIG(status);
+		}
 		cmd = cmd->next;
 	}
 }
 
-void	execute_cmds(t_cmd *cmd_list, char **envp)
+void	execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini)
 {
 	t_cmd	*cmd;
 	int		pipefd[2];
+	int		prev_fd;
 
 	cmd = cmd_list;
+	prev_fd = -1;
 	while (cmd)
 	{
+		pipefd[0] = -1;
+		pipefd[1] = -1;
+		if (prev_fd != -1)
+			cmd->fd_in = prev_fd;
 		if (cmd->next)
 		{
-			if (pipe(pipefd) == -1)
+			if (pipe(pipefd) < 0)
 			{
 				perror("pipe");
 				return ;
@@ -93,8 +120,18 @@ void	execute_cmds(t_cmd *cmd_list, char **envp)
 		if (cmd->process_pid == 0)
 			child_process(cmd, pipefd, envp);
 		else
-			parent_process(cmd, pipefd);
+		{
+			if (prev_fd != -1)
+				close(prev_fd);
+			if (cmd->next)
+			{
+				close(pipefd[1]);
+				prev_fd = pipefd[0];
+			}
+			else
+				prev_fd = -1;
+		}
 		cmd = cmd->next;
 	}
-	wait_all(cmd_list);
+	wait_all(cmd_list, mini);
 }
