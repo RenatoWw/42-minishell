@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 16:18:19 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 20:50:31 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/27 17:16:36 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,15 @@ void	replace_str(t_mini *mini, char **temp, int j)
 	free(newstr);
 }
 
+char	*remove_quote(char *temp)
+{
+	char	*temporary;
+
+	temporary = ft_strtrim(temp, "'\"");
+	free(temp);
+	return (temporary);
+}
+
 void	expand_variables(t_mini *mini)
 {
 	char	**temp;
@@ -74,6 +83,9 @@ void	expand_variables(t_mini *mini)
 			}
 			j++;
 		}
+		j = 0;
+		if (temp[i][j] == '\'' || temp[i][j] == '"')
+			temp[i] = remove_quote(temp[i]);
 		i++;
 	}
 }
