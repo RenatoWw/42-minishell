@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 16:18:19 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/21 20:10:53 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 20:50:31 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ char	*search_env(t_mini *mini, char *str)
 	temp = mini->env_list;
 	value = NULL;
 	trimmed = ft_strtrim(str, "$\"");
+	if (ft_strncmp(str, "$?", 4) == 0)
+		return (ft_strdup(ft_itoa(mini->exit_code)));
 	while (temp != NULL)
 	{
 		if (ft_strncmp(trimmed, temp->key, 30) == 0)
@@ -50,13 +52,12 @@ void	replace_str(t_mini *mini, char **temp, int j)
 	free(newstr);
 }
 
-void	expand_variables(t_mini *mini, char **envp)
+void	expand_variables(t_mini *mini)
 {
 	char	**temp;
 	int		i;
 	int		j;
 
-	copy_envp(mini, envp);
 	i = 0;
 	temp = mini->cmd->cmd_args;
 	while (temp[i])

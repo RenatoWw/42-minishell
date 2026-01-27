@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renato <renato@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/25 13:15:11 by renato            #+#    #+#             */
-/*   Updated: 2026/01/25 13:29:02 by renato           ###   ########.fr       */
+/*   Updated: 2026/01/26 21:03:53 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,39 +16,31 @@
 // ◦ echo with option -n
 // ◦ cd with only a relative or absolute path
 // ◦ pwd with no options
-// ◦ export with no options
+// ◦ export with no options							- OK
 // ◦ unset with no options
-// ◦ env with no options or arguments
+// ◦ env with no options or arguments 				- OK
 // ◦ exit with no options
-
-void	env_builtin(t_mini *mini)
-{
-	t_env	*temp;
-
-	temp = mini->env_list;
-	if (!temp)
-		return ;
-	while (temp != NULL)
-	{
-		printf("%s=%s\n", temp->key, temp->value);
-		temp = temp->next;
-	}
-}
 
 int	check_if_builtin(t_mini *mini)
 {
-	char	*cmd;
+	char	**cmd;
+	int		i;
 
-	cmd = mini->cmd->cmd_args[0];
-	if (ft_strncmp(cmd, "export", 10) == 0)
+	cmd = mini->cmd->cmd_args;
+	i = 0;
+	while (cmd[i])
 	{
-		printf("cmd: %s\n", cmd);
-		return (1);
-	}
-	else if (ft_strncmp(cmd, "env", 10) == 0)
-	{
-		env_builtin(mini);
-		return (1);
+		if (ft_strncmp(cmd[i], "export", 10) == 0)
+		{
+			export_builtin(mini);
+			return (1);
+		}
+		else if (ft_strncmp(cmd[i], "env", 10) == 0)
+		{
+			env_builtin(mini);
+			return (1);
+		}
+		i++;
 	}
 	return (0);
 }
