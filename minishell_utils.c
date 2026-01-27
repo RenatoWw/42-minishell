@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:45:19 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/21 19:19:24 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 20:48:21 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ void	free_all(t_mini *mini)
 		free_cmds(mini->cmd);
 	if (mini->input)
 		free(mini->input);
-	if (mini->env_list)
-		free_envp(mini->env_list);
 }
 
 void	restore_stdio(t_mini *mini)
@@ -35,8 +33,6 @@ void	set_mini_args(t_mini *mini)
 	mini->tokens = NULL;
 	mini->cmd = NULL;
 	mini->input = NULL;
-	mini->env_list = NULL;
-	mini->exit_code = 0;
 }
 
 void	validate_argc(int argc, char **argv)

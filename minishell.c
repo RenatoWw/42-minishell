@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 18:47:47 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 21:03:15 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@
 // essas duas não estão no pdf, tem a rl_clear_history, mas vou ver isso depois
 // expander no heredoc
 // função quote removal
+// pegar exit_code do comando anterior
+// export sem argumentos mostra as variáveis ordenadas alfabeticamente
 
 void	executioner(t_mini *mini, char **envp)
 {
 	if (mini->cmd)
 	{
-		expand_variables(mini, envp);
+		expand_variables(mini);
 		if (check_if_builtin(mini) == 1)
 			execute_builtin(mini);
 		else if (mini->cmd)
@@ -38,6 +40,8 @@ int	main(int argc, char **argv, char **envp)
 	using_history();
 	mini.original_stdin = dup(STDIN_FILENO);
 	mini.original_stdout = dup(STDOUT_FILENO);
+	mini.exit_code = 0;
+	copy_envp(&mini, envp);
 	while (1)
 	{
 		set_mini_args(&mini);
@@ -53,5 +57,6 @@ int	main(int argc, char **argv, char **envp)
 		free_all(&mini);
 	}
 	clear_history();
+	free_envp(mini.env_list);
 	return (0);
 }

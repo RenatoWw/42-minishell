@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:52:59 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 18:46:57 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 19:39:12 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,18 +98,12 @@ int	verify_syntax(t_token *token_list, int *exit_code)
 	temp = token_list;
 	while (temp != NULL)
 	{
-		printf("token: %s\n", temp->value);
 		if (unclosed_quote(temp->value) == 1)
 		{
 			*exit_code = 2;
 			return (1);
 		}
-		if (invalid_pipe(temp) == 1)
-		{
-			*exit_code = 2;
-			return (1);
-		}
-		if (invalid_red(temp) == 1)
+		if (invalid_pipe(temp) == 1 || invalid_red(temp) == 1)
 		{
 			*exit_code = 2;
 			return (1);

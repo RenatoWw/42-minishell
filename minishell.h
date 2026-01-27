@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: renato <renato@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 18:08:58 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/26 20:47:54 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ t_env		*create_envp_node(char *key, char *value);
 void		copy_envp(t_mini *mini, char **envp);
 void		insert_key_back(t_env **head, char *key, char *value);
 void		free_envp(t_env *env_list);
-void		expand_variables(t_mini *mini, char **envp);
+void		expand_variables(t_mini *mini);
 
 /* Minishell utils */
 void		restore_stdio(t_mini *mini);
@@ -114,6 +114,7 @@ void		validate_argc(int argc, char **argv);
 int			check_if_builtin(t_mini *mini);
 void		execute_builtin(t_mini *mini);
 void		env_builtin(t_mini *mini);
+void		export_builtin(t_mini *mini);
 
 /*execute*/
 t_cmd		*cmd_new(void);

@@ -19,6 +19,8 @@ SRCS = minishell.c \
 		expander/expander.c \
 		execute/heredoc.c \
 		builtins/utils.c \
+		builtins/env.c \
+		builtins/export.c \
 # 		test/test_execute.c \
 # 		test/test_main.c \
 
@@ -36,6 +38,8 @@ SRCS_TEST = test/test_main.c \
 			expander/envp_functions.c \
 			expander/expander.c \
 			builtins/utils.c \
+			builtins/env.c \
+			builtins/export.c \
 			test/test_execute.c \
 
 NAME_TEST = tester
