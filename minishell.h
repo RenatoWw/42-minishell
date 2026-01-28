@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 20:47:54 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/27 20:58:18 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# include <limits.h>
 # include "includes/libft/libft.h"
 
 # define RED "\033[31m"
@@ -103,6 +104,7 @@ void		copy_envp(t_mini *mini, char **envp);
 void		insert_key_back(t_env **head, char *key, char *value);
 void		free_envp(t_env *env_list);
 void		expand_variables(t_mini *mini);
+void		remove_envp_node(t_env **head, t_env *node);
 
 /* Minishell utils */
 void		restore_stdio(t_mini *mini);
@@ -113,8 +115,10 @@ void		validate_argc(int argc, char **argv);
 /* Built-ins */
 int			check_if_builtin(t_mini *mini);
 void		execute_builtin(t_mini *mini);
-void		env_builtin(t_mini *mini);
-void		export_builtin(t_mini *mini);
+int			env_builtin(t_mini *mini, char **args);
+int			export_builtin(t_mini *mini, char **args);
+int			unset_builtin(t_mini *mini, char **args);
+int			pwd_builtin(t_mini *mini, char **args);
 
 /*execute*/
 t_cmd		*cmd_new(void);
