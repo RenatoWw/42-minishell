@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/26 19:35:50 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/27 19:01:48 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/01/27 20:54:30 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/01/27 20:59:33 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	env_builtin(t_mini *mini, char **args)
+int	pwd_builtin(t_mini *mini, char **args)
 {
-	t_env	*temp;
+	char	pwd[2048];
 
+	(void)mini;
 	(void)args;
-	temp = mini->env_list;
-	if (!temp)
-		return (1);
-	while (temp != NULL)
+	if (getcwd(pwd, 2048) != NULL)
 	{
-		printf("%s=%s\n", temp->key, temp->value);
-		temp = temp->next;
+		printf("%s\n", pwd);
+		return (0);
 	}
-	return (0);
+	else
+	{
+		perror("pwd");
+		return (1);
+	}
 }
