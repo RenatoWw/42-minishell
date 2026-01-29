@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/25 13:15:11 by renato            #+#    #+#             */
-/*   Updated: 2026/01/27 20:58:45 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/29 17:59:08 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ int	check_if_builtin(t_mini *mini)
 		else if (ft_strncmp(cmd[i], "pwd", 10) == 0)
 		{
 			pwd_builtin(mini, mini->cmd->cmd_args);
+			return (1);
+		}
+		else if (ft_strncmp(cmd[i], "exit", 10) == 0)
+		{
+			exit_builtin(mini, mini->cmd->cmd_args);
 			return (1);
 		}
 		i++;

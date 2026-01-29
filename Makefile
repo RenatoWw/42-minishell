@@ -23,6 +23,7 @@ SRCS = minishell.c \
 		builtins/export.c \
 		builtins/unset.c \
 		builtins/pwd.c \
+		builtins/exit.c \
 
 SRCS_TEST = test/test_main.c \
 			lexer/lexer.c \
@@ -42,6 +43,7 @@ SRCS_TEST = test/test_main.c \
 			builtins/export.c \
 			builtins/unset.c \
 			builtins/pwd.c \
+			builtins/exit.c \
 			test/test_execute.c \
 
 NAME_TEST = tester

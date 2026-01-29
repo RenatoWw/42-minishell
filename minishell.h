@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/27 20:58:18 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/29 17:59:34 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,7 @@ int			env_builtin(t_mini *mini, char **args);
 int			export_builtin(t_mini *mini, char **args);
 int			unset_builtin(t_mini *mini, char **args);
 int			pwd_builtin(t_mini *mini, char **args);
+int			exit_builtin(t_mini *mini, char **args);
 
 /*execute*/
 t_cmd		*cmd_new(void);
