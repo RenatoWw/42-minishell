@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 18:23:51 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/29 18:31:14 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 // essas duas não estão no pdf, tem a rl_clear_history, mas vou ver isso depois
 // expander no heredoc
 
-// Implement remaining builtins (echo, cd, exit)
+// Implement remaining builtins (echo, cd)
 // Handle exit codes properly throughout
 // Test all pipe and redirection combinations
 // Built-ins not working with pipes

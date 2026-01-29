@@ -6,13 +6,13 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 19:55:24 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/27 18:53:42 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/29 18:46:31 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	sort_and_print(t_env **env_add, int len)
+static void	sort_and_print(t_env **env_add, int len)
 {
 	t_env	*temp;
 	int		i;
@@ -41,7 +41,7 @@ void	sort_and_print(t_env **env_add, int len)
 	}
 }
 
-void	print_env(t_env *env)
+static void	print_env(t_env *env)
 {
 	t_env	**env_add;
 	t_env	*temp;
