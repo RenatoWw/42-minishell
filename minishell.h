@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/27 20:58:18 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/29 20:50:49 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 # define RED "\033[31m"
 # define GREEN "\033[32m"
+# define PURPLE "\e[0;36m"
 # define RESET "\033[0m"
 
 typedef enum e_token_type
@@ -105,6 +106,7 @@ void		insert_key_back(t_env **head, char *key, char *value);
 void		free_envp(t_env *env_list);
 void		expand_variables(t_mini *mini);
 void		remove_envp_node(t_env **head, t_env *node);
+t_env		*search_node(t_env *head, char *key);
 
 /* Minishell utils */
 void		restore_stdio(t_mini *mini);
@@ -119,6 +121,9 @@ int			env_builtin(t_mini *mini, char **args);
 int			export_builtin(t_mini *mini, char **args);
 int			unset_builtin(t_mini *mini, char **args);
 int			pwd_builtin(t_mini *mini, char **args);
+int			exit_builtin(t_mini *mini, char **args);
+int			echo_builtin(t_mini *mini, char **args);
+int			cd_builtin(t_mini *mini, char **args);
 
 /*execute*/
 t_cmd		*cmd_new(void);
