@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 18:31:14 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/29 20:55:26 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 // essas duas não estão no pdf, tem a rl_clear_history, mas vou ver isso depois
 // expander no heredoc
 
-// Implement remaining builtins (echo, cd)
 // Handle exit codes properly throughout
 // Test all pipe and redirection combinations
 // Built-ins not working with pipes
@@ -46,6 +45,16 @@ void	initial_setup(t_mini *mini, int argc, char **argv, char **envp)
 	copy_envp(mini, envp);
 }
 
+void	print_dir(t_mini *mini)
+{
+	char	pwd[2048];
+	t_env	*user;
+
+	user = search_node(mini->env_list, "USER");
+	getcwd(pwd, 2048);
+	printf(PURPLE "%s:%s", user->value, pwd);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;
@@ -55,7 +64,8 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		set_mini_args(&mini);
-		mini.input = readline(GREEN "minishell> " RESET);
+		print_dir(&mini);
+		mini.input = readline("$ " RESET);
 		if (!mini.input)
 			break ;
 		if (ft_strncmp(mini.input, "", 2))
