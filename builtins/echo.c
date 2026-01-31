@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 18:30:24 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 18:46:18 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/31 03:33:17 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,9 @@ static int	check_n_flag(char *str)
 {
 	int	i;
 
-	i = 0;
-	if (ft_strncmp(str, "-", 10) == 0)
+	if (str[0] != '-')
 		return (1);
-	i++;
+	i = 1;
 	while (str[i])
 	{
 		if (str[i] != 'n')

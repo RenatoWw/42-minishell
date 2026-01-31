@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/21 16:18:19 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/27 17:16:36 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/31 03:40:11 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*search_env(t_mini *mini, char *str)
 	value = NULL;
 	trimmed = ft_strtrim(str, "$\"");
 	if (ft_strncmp(str, "$?", 4) == 0)
-		return (ft_strdup(ft_itoa(mini->exit_code)));
+		return (ft_itoa(mini->exit_code));
 	while (temp != NULL)
 	{
 		if (ft_strncmp(trimmed, temp->key, 30) == 0)

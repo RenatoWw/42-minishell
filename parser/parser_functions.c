@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 16:44:31 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 17:49:03 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/31 05:32:44 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,27 +33,27 @@ int	handle_redirections(t_token *temp, t_cmd **new_cmd)
 {
 	if (temp->type == TOKEN_REDIRECT_OUT)
 	{
-		(*new_cmd)->fd_out = open(
-				temp->next->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if ((*new_cmd)->fd_out == -1)
+		if (open_file(&(*new_cmd)->fd_out, temp->next->value,
+				O_WRONLY | O_CREAT | O_TRUNC))
 			return (1);
 	}
 	else if (temp->type == TOKEN_APPEND)
 	{
-		(*new_cmd)->fd_out = open(
-				temp->next->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if ((*new_cmd)->fd_out == -1)
+		if (open_file(&(*new_cmd)->fd_out, temp->next->value,
+				O_WRONLY | O_CREAT | O_APPEND))
 			return (1);
 	}
 	else if (temp->type == TOKEN_REDIRECT_IN)
 	{
-		(*new_cmd)->fd_in = open(temp->next->value, O_RDONLY);
-		if ((*new_cmd)->fd_in == -1)
+		if (open_file(&(*new_cmd)->fd_in, temp->next->value,
+				O_WRONLY | O_CREAT | O_APPEND))
 			return (1);
 	}
 	else if (temp->type == TOKEN_HEREDOC)
+	{
 		if (handle_heredoc(*new_cmd, temp->next->value) != 0)
 			return (1);
+	}
 	return (0);
 }
 
@@ -107,6 +107,10 @@ void	*free_cmds(t_cmd *cmd_list)
 	while (cmd_list != NULL)
 	{
 		temp = cmd_list->next;
+		if (cmd_list->fd_in > 2)
+			close(cmd_list->fd_in);
+		if (cmd_list->fd_out > 2)
+			close(cmd_list->fd_out);
 		if (cmd_list->cmd_args)
 		{
 			i = 0;
@@ -119,6 +123,5 @@ void	*free_cmds(t_cmd *cmd_list)
 		free(cmd_list);
 		cmd_list = temp;
 	}
-	free(cmd_list);
 	return (NULL);
 }
