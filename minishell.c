@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 20:55:26 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/30 22:51:38 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,25 +36,6 @@ void	executioner(t_mini *mini, char **envp)
 	}
 }
 
-void	initial_setup(t_mini *mini, int argc, char **argv, char **envp)
-{
-	validate_argc(argc, argv);
-	mini->original_stdin = dup(STDIN_FILENO);
-	mini->original_stdout = dup(STDOUT_FILENO);
-	mini->exit_code = 0;
-	copy_envp(mini, envp);
-}
-
-void	print_dir(t_mini *mini)
-{
-	char	pwd[2048];
-	t_env	*user;
-
-	user = search_node(mini->env_list, "USER");
-	getcwd(pwd, 2048);
-	printf(PURPLE "%s:%s", user->value, pwd);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_mini	mini;
@@ -64,8 +45,8 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		set_mini_args(&mini);
-		print_dir(&mini);
-		mini.input = readline("$ " RESET);
+		mini.prompt_str = print_dir(&mini);
+		mini.input = readline(mini.prompt_str);
 		if (!mini.input)
 			break ;
 		if (ft_strncmp(mini.input, "", 2))

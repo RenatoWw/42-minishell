@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 20:50:49 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/30 22:51:15 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@
 # include <limits.h>
 # include "includes/libft/libft.h"
 
-# define RED "\033[31m"
-# define GREEN "\033[32m"
-# define PURPLE "\e[0;36m"
-# define RESET "\033[0m"
+# define RED "\001\033[31m\002"
+# define GREEN "\001\033[32m\002"
+# define PURPLE "\001\e[0;36m\002"
+# define RESET "\001\033[0m\002"
 
 typedef enum e_token_type
 {
@@ -73,6 +73,7 @@ typedef struct s_mini
 	t_token	*tokens;
 	t_cmd	*cmd;
 	char	*input;
+	char	*prompt_str;
 	int		exit_code;
 	int		original_stdin;
 	int		original_stdout;
@@ -113,6 +114,9 @@ void		restore_stdio(t_mini *mini);
 void		free_all(t_mini *mini);
 void		set_mini_args(t_mini *mini);
 void		validate_argc(int argc, char **argv);
+char		*get_home_path(t_mini *mini, char *pwd);
+char		*print_dir(t_mini *mini);
+void		initial_setup(t_mini *mini, int argc, char **argv, char **envp);
 
 /* Built-ins */
 int			check_if_builtin(t_mini *mini);
