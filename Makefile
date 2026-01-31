@@ -26,6 +26,10 @@ SRCS = minishell.c \
 		builtins/exit.c \
 		builtins/echo.c \
 		builtins/cd.c \
+		print_dir.c \
+		signals/setup.c \
+		parser/parser_utils.c \
+		minishell_utils2.c \
 
 SRCS_TEST = test/test_main.c \
 			lexer/lexer.c \
@@ -48,6 +52,10 @@ SRCS_TEST = test/test_main.c \
 			builtins/exit.c \
 			builtins/echo.c \
 			builtins/cd.c \
+			print_dir.c \
+			signals/setup.c\
+			parser/parser_utils.c \
+			minishell_utils2.c \
 			test/test_execute.c \
 
 NAME_TEST = tester

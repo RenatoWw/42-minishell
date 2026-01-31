@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/25 13:15:11 by renato            #+#    #+#             */
-/*   Updated: 2026/01/29 21:01:04 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/31 05:00:28 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	check_if_builtin(t_mini *mini)
 {
-	char	**cmd;
-	int		i;
+	char		**cmd;
+	int			i;
 
 	cmd = mini->cmd->cmd_args;
 	i = 0;

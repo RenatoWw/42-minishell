@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/20 17:45:19 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 20:48:21 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/30 23:16:07 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	free_all(t_mini *mini)
 		free_cmds(mini->cmd);
 	if (mini->input)
 		free(mini->input);
+	if (mini->prompt_str)
+		free(mini->prompt_str);
 }
 
 void	restore_stdio(t_mini *mini)
@@ -42,4 +44,13 @@ void	validate_argc(int argc, char **argv)
 		printf("Usage: ./minishell\n");
 		exit(1);
 	}
+}
+
+void	initial_setup(t_mini *mini, int argc, char **argv, char **envp)
+{
+	validate_argc(argc, argv);
+	mini->original_stdin = dup(STDIN_FILENO);
+	mini->original_stdout = dup(STDOUT_FILENO);
+	mini->exit_code = 0;
+	copy_envp(mini, envp);
 }

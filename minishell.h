@@ -6,12 +6,14 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 20:50:49 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/31 06:04:50 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+# define _XOPEN_SOURCE 700
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -23,12 +25,15 @@
 # include <sys/stat.h>
 # include <sys/wait.h>
 # include <limits.h>
+# include <signal.h>
 # include "includes/libft/libft.h"
 
-# define RED "\033[31m"
-# define GREEN "\033[32m"
-# define PURPLE "\e[0;36m"
-# define RESET "\033[0m"
+# define RED "\001\033[31m\002"
+# define GREEN "\001\033[32m\002"
+# define PURPLE "\001\e[0;36m\002"
+# define RESET "\001\033[0m\002"
+
+extern int	g_signal;
 
 typedef enum e_token_type
 {
@@ -73,6 +78,7 @@ typedef struct s_mini
 	t_token	*tokens;
 	t_cmd	*cmd;
 	char	*input;
+	char	*prompt_str;
 	int		exit_code;
 	int		original_stdin;
 	int		original_stdout;
@@ -98,6 +104,7 @@ void		print_cmd_list(t_cmd *cmd_list);
 void		*free_cmds(t_cmd *cmd_list);
 int			fill_cmd_data(t_cmd *new_cmd, t_token **temp);
 int			handle_redirections(t_token *temp, t_cmd **new_cmd);
+int			open_file(int *fd_ptr, char *path, int flags);
 
 /* Expander functions */
 t_env		*create_envp_node(char *key, char *value);
@@ -113,6 +120,13 @@ void		restore_stdio(t_mini *mini);
 void		free_all(t_mini *mini);
 void		set_mini_args(t_mini *mini);
 void		validate_argc(int argc, char **argv);
+char		*get_home_path(t_mini *mini, char *pwd);
+char		*print_dir(t_mini *mini);
+void		initial_setup(t_mini *mini, int argc, char **argv, char **envp);
+t_mini		*get_data(t_mini *new_ptr);
+void		exit_properly(t_mini *mini);
+void		get_cmd_and_execute(t_mini *mini);
+char		**env_to_arr(t_env *env_list);
 
 /* Built-ins */
 int			check_if_builtin(t_mini *mini);
@@ -124,6 +138,10 @@ int			pwd_builtin(t_mini *mini, char **args);
 int			exit_builtin(t_mini *mini, char **args);
 int			echo_builtin(t_mini *mini, char **args);
 int			cd_builtin(t_mini *mini, char **args);
+
+/* Signals */
+void		handler_sigint(int signal);
+void		setup_signals(void);
 
 /*execute*/
 t_cmd		*cmd_new(void);
