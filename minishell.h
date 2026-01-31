@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/31 05:26:42 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/01/31 06:04:50 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,9 @@ char		*get_home_path(t_mini *mini, char *pwd);
 char		*print_dir(t_mini *mini);
 void		initial_setup(t_mini *mini, int argc, char **argv, char **envp);
 t_mini		*get_data(t_mini *new_ptr);
+void		exit_properly(t_mini *mini);
+void		get_cmd_and_execute(t_mini *mini);
+char		**env_to_arr(t_env *env_list);
 
 /* Built-ins */
 int			check_if_builtin(t_mini *mini);

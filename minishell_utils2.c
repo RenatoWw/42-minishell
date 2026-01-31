@@ -1,0 +1,75 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell_utils2.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/31 05:12:23 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/01/31 06:04:26 by ranhaia-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+t_mini	*get_data(t_mini *new_ptr)
+{
+	static t_mini	*ptr_backup;
+
+	if (new_ptr)
+		ptr_backup = new_ptr;
+	return (ptr_backup);
+}
+
+char	**env_to_arr(t_env *env_list)
+{
+	int		size;
+	int		i;
+	char	**arr;
+	char	*temp;
+
+	size = list_size((t_token *) env_list);
+	arr = malloc(sizeof(char *) * (size + 1));
+	if (!arr)
+		return (NULL);
+	i = 0;
+	while (i < size)
+	{
+		temp = ft_strjoin(env_list->key, "=");
+		if (!temp)
+			return (NULL);
+		arr[i] = ft_strjoin(temp, env_list->value);
+		free(temp);
+		env_list = env_list->next;
+		i++;
+	}
+	arr[i] = NULL;
+	return (arr);
+}
+
+void	get_cmd_and_execute(t_mini *mini)
+{
+	char	**new_envp;
+
+	new_envp = env_to_arr(mini->env_list);
+	mini->tokens = assign_tokens(mini);
+	mini->cmd = parse_tokens(mini->tokens, &mini->exit_code);
+	if (mini->cmd)
+	{
+		expand_variables(mini);
+		if (check_if_builtin(mini) == 1)
+			execute_builtin(mini);
+		else if (mini->cmd)
+			execute_cmds(mini->cmd, new_envp, mini);
+	}
+	restore_stdio(mini);
+	free_all(mini);
+}
+
+void	exit_properly(t_mini *mini)
+{
+	printf("exit\n");
+	free_all(mini);
+	free_envp(mini->env_list);
+	exit(0);
+}
