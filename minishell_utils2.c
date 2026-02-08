@@ -49,19 +49,22 @@ char	**env_to_arr(t_env *env_list)
 
 void	get_cmd_and_execute(t_mini *mini)
 {
-	char	**new_envp;
+	char	**envp;
 
-	new_envp = env_to_arr(mini->env_list);
+	envp = env_to_arr(mini->env_list);
 	mini->tokens = assign_tokens(mini);
-	mini->cmd = parse_tokens(mini->tokens, &mini->exit_code);
-	if (mini->cmd)
+	mini->cmd = parse_tokens(mini->tokens, mini);
+	if (!mini->cmd)
 	{
-		expand_variables(mini);
-		if (check_if_builtin(mini) == 1)
-			execute_builtin(mini);
-		else if (mini->cmd)
-			execute_cmds(mini->cmd, new_envp, mini);
+		free_split(envp);
+		return ;
 	}
+	expand_variables(mini);
+	if (!mini->cmd->next && is_builtin(mini->cmd->cmd_args[0]))
+		mini->exit_code = execute_single_builtin(mini);
+	else
+		execute_cmds(mini->cmd, envp, mini);
+	free_split(envp);
 	restore_stdio(mini);
 	free_all(mini);
 }

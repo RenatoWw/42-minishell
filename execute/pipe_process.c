@@ -3,135 +3,91 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_process.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dapinhei <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/15 13:04:03 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/26 18:10:12 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/02/08 06:42:33 by dapinhei          #+#    #+#             */
+/*   Updated: 2026/02/08 06:42:41 by dapinhei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// printf(
-// "DEBUG CHILD [%s] fd_in=%d fd_out=%d\n",
-// cmd->cmd_args[0],
-// cmd->fd_in,
-// cmd->fd_out
-// );
-
-void	child_process(t_cmd *cmd, int *pipefd, char **envp)
+static void	setup_input(t_cmd *cmd, int prev_fd)
 {
-	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
-		exit(0);
+	if (prev_fd != -1)
+	{
+		if (dup2(prev_fd, STDIN_FILENO) == -1)
+			perror("dup2");
+		close(prev_fd);
+	}
 	if (cmd->fd_in != STDIN_FILENO)
 	{
-		if (dup2(cmd->fd_in, STDIN_FILENO) < 0)
-			perror("dup2 stdin");
+		if (dup2(cmd->fd_in, STDIN_FILENO) == -1)
+			perror("dup2");
 		close(cmd->fd_in);
 	}
+}
+
+static void	setup_output(t_cmd *cmd, int pipefd[2])
+{
 	if (cmd->next)
 	{
-		if (dup2(pipefd[1], STDOUT_FILENO) < 0)
-			perror("dup2 pipe");
 		close(pipefd[0]);
+		if (dup2(pipefd[1], STDOUT_FILENO) == -1)
+			perror("dup2");
 		close(pipefd[1]);
 	}
 	else if (cmd->fd_out != STDOUT_FILENO)
 	{
-		if (dup2(cmd->fd_out, STDOUT_FILENO) < 0)
-			perror("dup2 strout");
+		if (dup2(cmd->fd_out, STDOUT_FILENO) == -1)
+			perror("dup2");
 		close(cmd->fd_out);
 	}
+}
+
+static void	exec_child(t_cmd *cmd, int prev_fd,
+	int pipefd[2], char **envp, t_mini *mini)
+{
+	setup_input(cmd, prev_fd);
+	setup_output(cmd, pipefd);
+	if (is_builtin(cmd->cmd_args[0]))
+		exit(exec_builtin(cmd->cmd_args, mini));
 	cmd->cmd_path = find_cmd_path(cmd->cmd_args[0], envp);
 	if (!cmd->cmd_path)
 	{
-		ft_putstr_fd("minishell: command not found: ", 2);
-		ft_putendl_fd(cmd->cmd_args[0], 2);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->cmd_args[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
 	execve(cmd->cmd_path, cmd->cmd_args, envp);
 	perror("execve");
-	exit(1);
+	exit(126);
 }
 
-void	parent_process(t_cmd *cmd, int *pipefd)
+void	execute_cmds(t_cmd *cmd, char **envp, t_mini *mini)
 {
-	if (!cmd)
-		return ;
-	if (cmd->next)
-	{
-		close(pipefd[1]);
-		cmd->next->fd_in = pipefd[0];
-	}
-}
-
-void	wait_all(t_cmd *cmd, t_mini *mini)
-{
-	int		status;
-	t_cmd	*last;
-
-	if (!cmd || !mini)
-		return ;
-	last = cmd;
-	while (last->next)
-		last = last->next;
-	while (cmd)
-	{
-		waitpid(cmd->process_pid, &status, 0);
-		if (cmd == last)
-		{
-			if (WIFEXITED(status))
-				mini->exit_code = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				mini->exit_code = 128 + WTERMSIG(status);
-		}
-		cmd = cmd->next;
-	}
-}
-
-void	execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini)
-{
-	t_cmd	*cmd;
 	int		pipefd[2];
 	int		prev_fd;
 
-	cmd = cmd_list;
 	prev_fd = -1;
 	while (cmd)
 	{
-		pipefd[0] = -1;
-		pipefd[1] = -1;
+		if (cmd->next && pipe(pipefd) == -1)
+			return (perror("pipe"));
+		cmd->process_pid = fork();
+		if (cmd->process_pid == -1)
+			return (perror("fork"));
+		if (cmd->process_pid == 0)
+			exec_child(cmd, prev_fd, pipefd, envp, mini);
 		if (prev_fd != -1)
-			cmd->fd_in = prev_fd;
+			close(prev_fd);
 		if (cmd->next)
 		{
-			if (pipe(pipefd) < 0)
-			{
-				perror("pipe");
-				return ;
-			}
-		}
-		cmd->process_pid = fork();
-		if (cmd->process_pid < 0)
-		{
-			perror("fork");
-			return ;
-		}
-		if (cmd->process_pid == 0)
-			child_process(cmd, pipefd, envp);
-		else
-		{
-			if (prev_fd != -1)
-				close(prev_fd);
-			if (cmd->next)
-			{
-				close(pipefd[1]);
-				prev_fd = pipefd[0];
-			}
-			else
-				prev_fd = -1;
+			close(pipefd[1]);
+			prev_fd = pipefd[0];
 		}
 		cmd = cmd->next;
 	}
-	wait_all(cmd_list, mini);
+	wait_all(get_data(NULL)->cmd, mini);
 }

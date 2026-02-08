@@ -12,56 +12,42 @@
 
 #include "../minishell.h"
 
-int	check_if_builtin(t_mini *mini)
+int	is_builtin(char *cmd)
 {
-	char		**cmd;
-	int			i;
-
-	cmd = mini->cmd->cmd_args;
-	i = 0;
-	while (cmd[i])
-	{
-		if (ft_strncmp(cmd[i], "export", 10) == 0)
-		{
-			export_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		else if (ft_strncmp(cmd[i], "env", 10) == 0)
-		{
-			env_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		else if (ft_strncmp(cmd[i], "unset", 10) == 0)
-		{
-			unset_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		else if (ft_strncmp(cmd[i], "pwd", 10) == 0)
-		{
-			pwd_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		else if (ft_strncmp(cmd[i], "exit", 10) == 0)
-		{
-			exit_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		else if (ft_strncmp(cmd[i], "echo", 10) == 0)
-		{
-			echo_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		else if (ft_strncmp(cmd[i], "cd", 10) == 0)
-		{
-			cd_builtin(mini, mini->cmd->cmd_args);
-			return (1);
-		}
-		i++;
-	}
+	if (!cmd)
+		return (0);
+	if (!ft_strncmp(cmd, "echo", 5))
+		return (1);
+	if (!ft_strncmp(cmd, "cd", 3))
+		return (1);
+	if (!ft_strncmp(cmd, "pwd", 4))
+		return (1);
+	if (!ft_strncmp(cmd, "export", 7))
+		return (1);
+	if (!ft_strncmp(cmd, "unset", 6))
+		return (1);
+	if (!ft_strncmp(cmd, "env", 4))
+		return (1);
+	if (!ft_strncmp(cmd, "exit", 5))
+		return (1);
 	return (0);
 }
 
-void	execute_builtin(t_mini *mini)
+int	exec_builtin(char **args, t_mini *mini)
 {
-	(void)mini;
+	if (!ft_strncmp(args[0], "echo", 5))
+		return (echo_builtin(mini, args));
+	if (!ft_strncmp(args[0], "cd", 3))
+		return (cd_builtin(mini, args));
+	if (!ft_strncmp(args[0], "pwd", 4))
+		return (pwd_builtin(mini, args));
+	if (!ft_strncmp(args[0], "export", 7))
+		return (export_builtin(mini, args));
+	if (!ft_strncmp(args[0], "unset", 6))
+		return (unset_builtin(mini, args));
+	if (!ft_strncmp(args[0], "env", 4))
+		return (env_builtin(mini, args));
+	if (!ft_strncmp(args[0], "exit", 5))
+		return (exit_builtin(mini, args));
+	return (1);
 }

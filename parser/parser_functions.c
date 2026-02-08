@@ -10,6 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_functions.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/01/14 16:44:31 by ranhaia-          #+#    #+#             */
+/*   Updated: 2026/02/08 00:00:00 by assistant         ###   ########.fr      */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 t_cmd	*create_node(char **cmd_args)
@@ -29,29 +41,40 @@ t_cmd	*create_node(char **cmd_args)
 	return (new);
 }
 
-int	handle_redirections(t_token *temp, t_cmd **new_cmd)
+static int	handle_output(t_token *temp, t_cmd **cmd)
+{
+	if (open_file(&(*cmd)->fd_out, temp->next->value,
+			O_WRONLY | O_CREAT | O_TRUNC))
+		return (1);
+	return (0);
+}
+
+static int	handle_append(t_token *temp, t_cmd **cmd)
+{
+	if (open_file(&(*cmd)->fd_out, temp->next->value,
+			O_WRONLY | O_CREAT | O_APPEND))
+		return (1);
+	return (0);
+}
+
+static int	handle_input(t_token *temp, t_cmd **cmd)
+{
+	if (open_file(&(*cmd)->fd_in, temp->next->value, O_RDONLY))
+		return (1);
+	return (0);
+}
+
+int	handle_redirections(t_token *temp, t_cmd **new_cmd, t_mini *mini)
 {
 	if (temp->type == TOKEN_REDIRECT_OUT)
-	{
-		if (open_file(&(*new_cmd)->fd_out, temp->next->value,
-				O_WRONLY | O_CREAT | O_TRUNC))
-			return (1);
-	}
+		return (handle_output(temp, new_cmd));
 	else if (temp->type == TOKEN_APPEND)
-	{
-		if (open_file(&(*new_cmd)->fd_out, temp->next->value,
-				O_WRONLY | O_CREAT | O_APPEND))
-			return (1);
-	}
+		return (handle_append(temp, new_cmd));
 	else if (temp->type == TOKEN_REDIRECT_IN)
-	{
-		if (open_file(&(*new_cmd)->fd_in, temp->next->value,
-				O_WRONLY | O_CREAT | O_APPEND))
-			return (1);
-	}
+		return (handle_input(temp, new_cmd));
 	else if (temp->type == TOKEN_HEREDOC)
 	{
-		if (handle_heredoc(*new_cmd, temp->next->value) != 0)
+		if (handle_heredoc(temp->next->value, *new_cmd, mini))
 			return (1);
 	}
 	return (0);
@@ -62,15 +85,16 @@ void	print_cmd_list(t_cmd *cmd_list)
 	t_cmd	*temp;
 	int		i;
 
-	if (!cmd_list)
-		return ;
 	temp = cmd_list;
-	while (temp != NULL)
+	while (temp)
 	{
 		i = 0;
 		printf("node t_cmd-> ");
-		while (temp->cmd_args[i])
-			printf("\"%s\" ", temp->cmd_args[i++]);
+		while (temp->cmd_args && temp->cmd_args[i])
+		{
+			printf("\"%s\" ", temp->cmd_args[i]);
+			i++;
+		}
 		printf("\n");
 		temp = temp->next;
 	}
@@ -80,44 +104,47 @@ void	insert_cmd_back(t_cmd **head, t_cmd *newnode)
 {
 	t_cmd	*temp;
 
-	if (!newnode)
+	if (!head || !newnode)
 		return ;
-	if (!(*head))
+	if (!*head)
 	{
 		*head = newnode;
-		newnode->next = NULL;
-		newnode->prev = NULL;
 		return ;
 	}
 	temp = *head;
-	while (temp->next != NULL)
+	while (temp->next)
 		temp = temp->next;
 	temp->next = newnode;
-	newnode->next = NULL;
 	newnode->prev = temp;
+}
+
+static void	free_cmd_args(char **args)
+{
+	int	i;
+
+	i = 0;
+	if (!args)
+		return ;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
 }
 
 void	*free_cmds(t_cmd *cmd_list)
 {
 	t_cmd	*temp;
-	int		i;
 
-	if (!cmd_list)
-		return (NULL);
-	while (cmd_list != NULL)
+	while (cmd_list)
 	{
 		temp = cmd_list->next;
 		if (cmd_list->fd_in > 2)
 			close(cmd_list->fd_in);
 		if (cmd_list->fd_out > 2)
 			close(cmd_list->fd_out);
-		if (cmd_list->cmd_args)
-		{
-			i = 0;
-			while (cmd_list->cmd_args[i])
-				free(cmd_list->cmd_args[i++]);
-			free(cmd_list->cmd_args);
-		}
+		free_cmd_args(cmd_list->cmd_args);
 		if (cmd_list->cmd_path)
 			free(cmd_list->cmd_path);
 		free(cmd_list);

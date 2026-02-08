@@ -3,68 +3,81 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dapinhei <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/23 07:45:59 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/31 05:21:38 by ranhaia-         ###   ########.fr       */
+/*   Created: 2026/02/08 07:09:34 by dapinhei          #+#    #+#             */
+/*   Updated: 2026/02/08 07:09:36 by dapinhei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void	read_cmd(int pipefd[2], char *delimiter)
+static int	is_quoted(char *delimiter)
+{
+	if (!delimiter)
+		return (0);
+	if (delimiter[0] == '\'' || delimiter[0] == '"')
+		return (1);
+	return (0);
+}
+
+static char	*remove_quotes(char *delimiter)
+{
+	int	len;
+
+	len = ft_strlen(delimiter);
+	if ((delimiter[0] == '\'' && delimiter[len - 1] == '\'')
+		|| (delimiter[0] == '"' && delimiter[len - 1] == '"'))
+		return (ft_substr(delimiter, 1, len - 2));
+	return (ft_strdup(delimiter));
+}
+
+static void	write_line(int fd, char *line)
+{
+	write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+}
+
+static void	heredoc_loop(int fd, char *delimiter, int expand, t_mini *mini)
 {
 	char	*line;
+	char	*expanded;
 
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 			break ;
-		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
+		if (!ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1))
 		{
 			free(line);
 			break ;
 		}
-		write(pipefd[1], line, ft_strlen(line));
-		write(pipefd[1], "\n", 1);
+		if (expand)
+		{
+			expanded = expand_string(line, mini);
+			write_line(fd, expanded);
+			free(expanded);
+		}
+		else
+			write_line(fd, line);
 		free(line);
 	}
 }
 
-static void	clean_up_heredoc(t_mini *mini_ptr, t_cmd *cmd, int pipefd[2])
+int	handle_heredoc(char *delimiter, t_cmd *cmd, t_mini *mini)
 {
-	close(pipefd[1]);
-	free_all(mini_ptr);
-	free_envp(mini_ptr->env_list);
-	free_cmds(cmd);
-}
+	int		fd[2];
+	int		expand;
+	char	*clean_delimiter;
 
-int	handle_heredoc(t_cmd *cmd, char *delimiter)
-{
-	int		pipefd[2];
-	pid_t	pid;
-	t_mini	*mini_ptr;
-
-	mini_ptr = get_data(NULL);
-	if (!cmd || !delimiter)
-		return (1);
-	if (pipe(pipefd) == -1)
+	if (pipe(fd) == -1)
 		return (perror("pipe"), 1);
-	pid = fork();
-	if (pid < 0)
-		return (perror("fork"), 1);
-	if (pid == 0)
-	{
-		close(pipefd[0]);
-		read_cmd(pipefd, delimiter);
-		clean_up_heredoc(mini_ptr, cmd, pipefd);
-		exit(0);
-	}
-	close(pipefd[1]);
-	waitpid(pid, NULL, 0);
-	if (cmd->fd_in != STDIN_FILENO)
-		close(cmd->fd_in);
-	cmd->fd_in = pipefd[0];
+	expand = !is_quoted(delimiter);
+	clean_delimiter = remove_quotes(delimiter);
+	heredoc_loop(fd[1], clean_delimiter, expand, mini);
+	close(fd[1]);
+	cmd->fd_in = fd[0];
+	free(clean_delimiter);
 	return (0);
 }

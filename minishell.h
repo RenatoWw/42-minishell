@@ -94,7 +94,7 @@ void		free_tokens(t_token *token_list);
 int			is_space(char chr);
 
 /* Parser functions */
-t_cmd		*parse_tokens(t_token *token_list, int *exit_code);
+t_cmd		*parse_tokens(t_token *token_list, t_mini *mini);
 int			print_error(char *token_value);
 int			invalid_pipe(t_token *temp);
 int			verify_syntax(t_token *token_list, int *exit_code);
@@ -102,8 +102,8 @@ t_cmd		*create_node(char **cmd_args);
 void		insert_cmd_back(t_cmd **head, t_cmd *newnode);
 void		print_cmd_list(t_cmd *cmd_list);
 void		*free_cmds(t_cmd *cmd_list);
-int			fill_cmd_data(t_cmd *new_cmd, t_token **temp);
-int			handle_redirections(t_token *temp, t_cmd **new_cmd);
+int			fill_cmd_data(t_cmd *new_cmd, t_token **temp, t_mini *mini);
+int			handle_redirections(t_token *temp, t_cmd **new_cmd, t_mini *mini);
 int			open_file(int *fd_ptr, char *path, int flags);
 
 /* Expander functions */
@@ -155,8 +155,14 @@ void		wait_all(t_cmd *cmd, t_mini *mini);
 void		execute_cmds(t_cmd *cmd_list, char **envp, t_mini *mini);
 void		free_split(char **split);
 char		*ft_strjoin_free(char *s1, char *s2);
-int			handle_heredoc(t_cmd *cmd, char *delimiter);
+int			handle_heredoc(char *delimiter, t_cmd *cmd, t_mini *mini);
 char		*search_path(char *cmd, char **paths);
+int			is_builtin(char *cmd);
+int			exec_builtin(char **args, t_mini *mini);
+int			execute_single_builtin(t_mini *mini);
+char		*expand_string(char *input, t_mini *mini);
+
+
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);

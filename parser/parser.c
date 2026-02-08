@@ -27,11 +27,11 @@ int	count_cmds(t_token *token_list)
 	t_token	*temp;
 	int		len;
 
-	temp = token_list;
 	len = 1;
+	temp = token_list;
 	while (temp)
 	{
-		if (temp->type == 1)
+		if (temp->type == TOKEN_PIPE)
 			len++;
 		temp = temp->next;
 	}
@@ -43,16 +43,14 @@ int	count_words(t_token *token_list)
 	t_token	*temp;
 	int		len;
 
-	temp = token_list;
 	len = 0;
-	while (temp != NULL && temp->type != TOKEN_PIPE)
+	temp = token_list;
+	while (temp && temp->type != TOKEN_PIPE)
 	{
 		if (temp->type == TOKEN_WORD)
 			len++;
-		if (temp->type == TOKEN_REDIRECT_IN
-			|| temp->type == TOKEN_REDIRECT_OUT
-			|| temp->type == TOKEN_APPEND
-			|| temp->type == TOKEN_HEREDOC)
+		if (temp->type >= TOKEN_REDIRECT_IN
+			&& temp->type <= TOKEN_HEREDOC)
 		{
 			temp = temp->next;
 			if (temp)
@@ -64,19 +62,31 @@ int	count_words(t_token *token_list)
 	return (len);
 }
 
-int	fill_cmd_data(t_cmd *new_cmd, t_token **temp)
+static int	is_redirection(t_token *token)
+{
+	if (token->type == TOKEN_REDIRECT_IN)
+		return (1);
+	if (token->type == TOKEN_REDIRECT_OUT)
+		return (1);
+	if (token->type == TOKEN_APPEND)
+		return (1);
+	if (token->type == TOKEN_HEREDOC)
+		return (1);
+	return (0);
+}
+
+int	fill_cmd_data(t_cmd *new_cmd, t_token **temp, t_mini *mini)
 {
 	int	i;
 
-	if (!new_cmd || !temp || !*temp)
-		return (1);
 	i = 0;
 	while (*temp && (*temp)->type != TOKEN_PIPE)
 	{
-		if ((*temp)->type == 2 || (*temp)->type == 3 || (*temp)->type == 4
-			|| (*temp)->type == 5)
+		if (is_redirection(*temp))
 		{
-			if (!(*temp)->next || handle_redirections(*temp, &new_cmd) == 1)
+			if (!(*temp)->next)
+				return (1);
+			if (handle_redirections(*temp, &new_cmd, mini))
 				return (1);
 			*temp = (*temp)->next->next;
 			continue ;
@@ -93,7 +103,7 @@ int	fill_cmd_data(t_cmd *new_cmd, t_token **temp)
 	return (0);
 }
 
-t_cmd	*parse_tokens(t_token *token_list, int *exit_code)
+t_cmd	*parse_tokens(t_token *token_list, t_mini *mini)
 {
 	t_cmd	*cmd_list;
 	t_cmd	*new_cmd;
@@ -101,21 +111,24 @@ t_cmd	*parse_tokens(t_token *token_list, int *exit_code)
 
 	if (!token_list)
 		return (NULL);
-	if (verify_syntax(token_list, exit_code) == 1)
+	if (verify_syntax(token_list, &mini->exit_code))
 		return (NULL);
-	temp = token_list;
 	cmd_list = NULL;
-	while (temp != NULL)
+	temp = token_list;
+	while (temp)
 	{
 		new_cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!new_cmd)
-			return (NULL);
+			return (free_cmds(cmd_list));
 		init_cmd(new_cmd);
-		new_cmd->cmd_args = ft_calloc(count_words(temp) + 1, sizeof(char *));
-		if (!new_cmd->cmd_args || fill_cmd_data(new_cmd, &temp) == 1)
-			return (free_cmds(new_cmd));
+		new_cmd->cmd_args = ft_calloc(count_words(temp) + 1,
+				sizeof(char *));
+		if (!new_cmd->cmd_args)
+			return (free_cmds(cmd_list));
+		if (fill_cmd_data(new_cmd, &temp, mini))
+			return (free_cmds(cmd_list));
 		insert_cmd_back(&cmd_list, new_cmd);
-		if (temp != NULL)
+		if (temp)
 			temp = temp->next;
 	}
 	return (cmd_list);

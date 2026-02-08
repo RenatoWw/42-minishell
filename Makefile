@@ -12,6 +12,8 @@ SRCS = minishell.c \
 		execute/get_commands.c \
 		execute/pipe_process.c \
 		execute/utils_exec.c \
+		execute/expand_string.c \
+		execute/execute_single_builtin.c \
 		parser/syntax_parser.c \
 		parser/parser_functions.c \
 		minishell_utils.c \
