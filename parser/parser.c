@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 14:37:55 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 17:55:13 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 16:47:41 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,46 +20,6 @@ static void	init_cmd(t_cmd *cmd)
 	cmd->process_pid = -1;
 	cmd->next = NULL;
 	cmd->prev = NULL;
-}
-
-int	count_cmds(t_token *token_list)
-{
-	t_token	*temp;
-	int		len;
-
-	len = 1;
-	temp = token_list;
-	while (temp)
-	{
-		if (temp->type == TOKEN_PIPE)
-			len++;
-		temp = temp->next;
-	}
-	return (len);
-}
-
-int	count_words(t_token *token_list)
-{
-	t_token	*temp;
-	int		len;
-
-	len = 0;
-	temp = token_list;
-	while (temp && temp->type != TOKEN_PIPE)
-	{
-		if (temp->type == TOKEN_WORD)
-			len++;
-		if (temp->type >= TOKEN_REDIRECT_IN
-			&& temp->type <= TOKEN_HEREDOC)
-		{
-			temp = temp->next;
-			if (temp)
-				temp = temp->next;
-			continue ;
-		}
-		temp = temp->next;
-	}
-	return (len);
 }
 
 static int	is_redirection(t_token *token)
@@ -109,9 +69,7 @@ t_cmd	*parse_tokens(t_token *token_list, t_mini *mini)
 	t_cmd	*new_cmd;
 	t_token	*temp;
 
-	if (!token_list)
-		return (NULL);
-	if (verify_syntax(token_list, &mini->exit_code))
+	if (!token_list || verify_syntax(token_list, &mini->exit_code))
 		return (NULL);
 	cmd_list = NULL;
 	temp = token_list;

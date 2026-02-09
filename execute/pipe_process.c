@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_process.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapinhei <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 06:42:33 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/02/08 06:42:41 by dapinhei         ###   ########.fr       */
+/*   Updated: 2026/02/09 16:59:28 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,22 @@ static void	setup_output(t_cmd *cmd, int pipefd[2])
 	}
 }
 
-static void	exec_child(t_cmd *cmd, int prev_fd,
+static void	exec_child(int prev_fd,
 	int pipefd[2], char **envp, t_mini *mini)
 {
-	setup_input(cmd, prev_fd);
-	setup_output(cmd, pipefd);
-	if (is_builtin(cmd->cmd_args[0]))
-		exit(exec_builtin(cmd->cmd_args, mini));
-	cmd->cmd_path = find_cmd_path(cmd->cmd_args[0], envp);
-	if (!cmd->cmd_path)
+	setup_input(mini->cmd, prev_fd);
+	setup_output(mini->cmd, pipefd);
+	if (is_builtin(mini->cmd->cmd_args[0]))
+		exit(exec_builtin(mini->cmd->cmd_args, mini));
+	mini->cmd->cmd_path = find_cmd_path(mini->cmd->cmd_args[0], envp);
+	if (!mini->cmd->cmd_path)
 	{
 		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd->cmd_args[0], 2);
+		ft_putstr_fd(mini->cmd->cmd_args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
-	execve(cmd->cmd_path, cmd->cmd_args, envp);
+	execve(mini->cmd->cmd_path, mini->cmd->cmd_args, envp);
 	perror("execve");
 	exit(126);
 }
@@ -79,7 +79,7 @@ void	execute_cmds(t_cmd *cmd, char **envp, t_mini *mini)
 		if (cmd->process_pid == -1)
 			return (perror("fork"));
 		if (cmd->process_pid == 0)
-			exec_child(cmd, prev_fd, pipefd, envp, mini);
+			exec_child(prev_fd, pipefd, envp, mini);
 		if (prev_fd != -1)
 			close(prev_fd);
 		if (cmd->next)

@@ -32,6 +32,7 @@ SRCS = minishell.c \
 		signals/setup.c \
 		parser/parser_utils.c \
 		minishell_utils2.c \
+		parser/paser_utils2.c \
 
 SRCS_TEST = test/test_main.c \
 			lexer/lexer.c \
@@ -58,6 +59,7 @@ SRCS_TEST = test/test_main.c \
 			signals/setup.c\
 			parser/parser_utils.c \
 			minishell_utils2.c \
+			parser/paser_utils2.c \
 			test/test_execute.c \
 
 NAME_TEST = tester
@@ -81,7 +83,7 @@ $(NAME): $(OBJS) $(LIBFT_A)
 	$(CC) $(CFLAGS) $(OBJS) -lreadline $(LIBFT_A) -o $(NAME)
 
 run: all
-	valgrind --suppressions=includes/valgrind.sup --leak-check=full --show-leak-kinds=all ./minishell
+	valgrind --suppressions=includes/valgrind.sup --leak-check=full --show-leak-kinds=all --track-origins=yes ./minishell
 
 $(LIBFT_A):
 	$(MAKE) -s -C $(LIBFT)

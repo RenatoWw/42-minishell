@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/31 06:04:50 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 16:50:42 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,9 @@ void		*free_cmds(t_cmd *cmd_list);
 int			fill_cmd_data(t_cmd *new_cmd, t_token **temp, t_mini *mini);
 int			handle_redirections(t_token *temp, t_cmd **new_cmd, t_mini *mini);
 int			open_file(int *fd_ptr, char *path, int flags);
+int			count_cmds(t_token *token_list);
+int			count_words(t_token *token_list);
+void		free_cmd_args(char **args);
 
 /* Expander functions */
 t_env		*create_envp_node(char *key, char *value);
@@ -161,8 +164,6 @@ int			is_builtin(char *cmd);
 int			exec_builtin(char **args, t_mini *mini);
 int			execute_single_builtin(t_mini *mini);
 char		*expand_string(char *input, t_mini *mini);
-
-
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);
