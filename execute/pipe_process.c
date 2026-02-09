@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 06:42:33 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/02/09 16:59:28 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 17:13:47 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	setup_output(t_cmd *cmd, int pipefd[2])
 			perror("dup2");
 		close(pipefd[1]);
 	}
-	else if (cmd->fd_out != STDOUT_FILENO)
+	if (cmd->fd_out != STDOUT_FILENO)
 	{
 		if (dup2(cmd->fd_out, STDOUT_FILENO) == -1)
 			perror("dup2");
@@ -65,14 +65,28 @@ static void	exec_child(int prev_fd,
 	exit(126);
 }
 
+void	handle_parent_fds(int *prev_fd, t_cmd *cmd, int pipefd[2])
+{
+	if (*prev_fd != -1)
+		close(*prev_fd);
+	if (cmd->next)
+	{
+		close(pipefd[1]);
+		*prev_fd = pipefd[0];
+	}
+}
+
 void	execute_cmds(t_cmd *cmd, char **envp, t_mini *mini)
 {
 	int		pipefd[2];
 	int		prev_fd;
+	t_cmd	*head_backup;
 
+	head_backup = mini->cmd;
 	prev_fd = -1;
 	while (cmd)
 	{
+		mini->cmd = cmd;
 		if (cmd->next && pipe(pipefd) == -1)
 			return (perror("pipe"));
 		cmd->process_pid = fork();
@@ -80,14 +94,9 @@ void	execute_cmds(t_cmd *cmd, char **envp, t_mini *mini)
 			return (perror("fork"));
 		if (cmd->process_pid == 0)
 			exec_child(prev_fd, pipefd, envp, mini);
-		if (prev_fd != -1)
-			close(prev_fd);
-		if (cmd->next)
-		{
-			close(pipefd[1]);
-			prev_fd = pipefd[0];
-		}
+		handle_parent_fds(&prev_fd, cmd, pipefd);
 		cmd = cmd->next;
 	}
+	mini->cmd = head_backup;
 	wait_all(get_data(NULL)->cmd, mini);
 }
