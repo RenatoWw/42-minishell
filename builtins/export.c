@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 19:55:24 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 18:46:31 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 20:16:25 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,30 +63,64 @@ static void	print_env(t_env *env)
 	free(env_add);
 }
 
+static void	handle_export_arg(t_mini *mini, char *arg)
+{
+	char	*key;
+	char	*value;
+	char	*equal_sign;
+	t_env	*existing_node;
+
+	equal_sign = ft_strchr(arg, '=');
+	if (equal_sign)
+	{
+		key = ft_substr(arg, 0, equal_sign - arg);
+		value = ft_strdup(equal_sign + 1);
+	}
+	else
+	{
+		key = ft_strdup(arg);
+		value = NULL;
+	}
+	if (!is_valid_env_key(key))
+	{
+		printf(RED "export: `%s': not a valid identifier\n" RESET, arg);
+		free(key);
+		if (value)
+			free(value);
+		return ;
+	}
+	existing_node = find_env_node(mini->env_list, key);
+	if (existing_node)
+	{
+		if (value)
+		{
+			free(existing_node->value);
+			existing_node->value = value;
+		}
+		free(key);
+	}
+	else
+	{
+		if (!value)
+			value = ft_strdup("");
+		insert_key_back(&mini->env_list, key, value);
+	}
+}
+
 int	export_builtin(t_mini *mini, char **args)
 {
-	int		j;
+	int		i;
 
+	i = 1;
 	if (!args[1])
 	{
 		print_env(mini->env_list);
 		return (0);
 	}
-	if (ft_strchr(args[1], '=') == NULL)
+	while (args[i])
 	{
-		insert_key_back(&mini->env_list,
-			ft_substr(args[1], 0, ft_strlen(args[1])), ft_strdup("")
-			);
-		return (0);
-	}
-	j = 0;
-	while (args[1][j])
-	{
-		if (args[1][j] == '=')
-			insert_key_back(&mini->env_list, ft_substr(args[1], 0, j),
-				ft_substr(args[1], j + 1, ft_strlen(args[1]))
-				);
-		j++;
+		handle_export_arg(mini, args[i]);
+		i++;
 	}
 	return (0);
 }

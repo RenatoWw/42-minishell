@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/31 06:07:51 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 21:22:46 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 // fazer:
 // Handle exit codes properly throughout
-// Test all pipe and redirection combinations
-// Built-ins not working with pipes
 // Signal handling (Ctrl+C, Ctrl+D)
 // Heredoc Expander
 
@@ -35,9 +33,16 @@ int	main(int argc, char **argv, char **envp)
 		mini.input = readline(mini.prompt_str);
 		if (!mini.input)
 			exit_properly(&mini);
-		if (ft_strncmp(mini.input, "", 2))
+		if (mini.input[0] != '\0')
+		{
 			add_history(mini.input);
-		get_cmd_and_execute(&mini);
+			get_cmd_and_execute(&mini);
+		}
+		else
+		{
+			free(mini.input);
+			free(mini.prompt_str);
+		}
 	}
 	rl_clear_history();
 	free_all(&mini);

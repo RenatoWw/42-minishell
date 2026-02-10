@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/09 16:50:42 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 20:43:59 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,9 @@ void		free_envp(t_env *env_list);
 void		expand_variables(t_mini *mini);
 void		remove_envp_node(t_env **head, t_env *node);
 t_env		*search_node(t_env *head, char *key);
+int			is_valid_env_key(char *key);
+t_env		*find_env_node(t_env *env, char *key);
+void		remove_quotes(char **temp);
 
 /* Minishell utils */
 void		restore_stdio(t_mini *mini);

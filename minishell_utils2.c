@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 05:12:23 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/31 06:04:26 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/09 21:06:10 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	**env_to_arr(t_env *env_list)
 	if (!arr)
 		return (NULL);
 	i = 0;
-	while (i < size)
+	while (i < size && env_list)
 	{
 		temp = ft_strjoin(env_list->key, "=");
 		if (!temp)
@@ -51,14 +51,14 @@ void	get_cmd_and_execute(t_mini *mini)
 {
 	char	**envp;
 
-	envp = env_to_arr(mini->env_list);
 	mini->tokens = assign_tokens(mini);
 	mini->cmd = parse_tokens(mini->tokens, mini);
 	if (!mini->cmd)
 	{
-		free_split(envp);
+		free_all(mini);
 		return ;
 	}
+	envp = env_to_arr(mini->env_list);
 	expand_variables(mini);
 	if (!mini->cmd->next && is_builtin(mini->cmd->cmd_args[0]))
 		mini->exit_code = execute_single_builtin(mini);
@@ -74,5 +74,7 @@ void	exit_properly(t_mini *mini)
 	printf("exit\n");
 	free_all(mini);
 	free_envp(mini->env_list);
+	close(mini->original_stdin);
+	close(mini->original_stdout);
 	exit(0);
 }
