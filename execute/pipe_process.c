@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 06:42:33 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/02/10 17:59:47 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 21:31:21 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,28 @@ static void	setup_output(t_cmd *cmd, int pipefd[2])
 	}
 }
 
+void	invalid_cmd(t_mini *mini, char **envp)
+{
+	free_split(envp);
+	free_all(mini);
+	free_envp(mini->env_list);
+	close(mini->original_stdin);
+	close(mini->original_stdout);
+	exit(0);
+}
+
 static void	exec_child(t_fd	fds, char **envp, t_mini *mini, t_cmd *cmd)
 {
 	int	exit_code;
 
 	setup_input(cmd, fds.prev_fd);
 	setup_output(cmd, fds.pipefd);
+	if (!cmd->cmd_args || !cmd->cmd_args[0])
+		invalid_cmd(mini, envp);
 	if (is_builtin(cmd->cmd_args[0]))
 	{
 		exit_code = exec_builtin(cmd->cmd_args, mini);
 		clean_child(envp, mini);
-		close(mini->original_stdin);
-		close(mini->original_stdout);
 		exit(exit_code);
 	}
 	cmd->cmd_path = find_cmd_path(cmd->cmd_args[0], envp);

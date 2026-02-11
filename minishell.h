@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/10 17:57:53 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 21:30:25 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ int			exec_builtin(char **args, t_mini *mini);
 int			execute_single_builtin(t_mini *mini);
 char		*expand_string(char *input, t_mini *mini);
 void		clean_child(char **envp, t_mini *mini);
+void		clean_invalid_cmd(t_mini *mini, char **envp);
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);
