@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/10 21:30:25 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/11 04:21:51 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,8 @@ int			cd_builtin(t_mini *mini, char **args);
 /* Signals */
 void		handler_sigint(int signal);
 void		setup_signals(void);
+void		setup_exec_signals(void);
+void		setup_child_signals(void);
 
 /*execute*/
 t_cmd		*cmd_new(void);
@@ -176,6 +178,7 @@ int			execute_single_builtin(t_mini *mini);
 char		*expand_string(char *input, t_mini *mini);
 void		clean_child(char **envp, t_mini *mini);
 void		clean_invalid_cmd(t_mini *mini, char **envp);
+void		handle_parent_fds(int *prev_fd, t_cmd *cmd, int pipefd[2]);
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);

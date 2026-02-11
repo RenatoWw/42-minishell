@@ -6,29 +6,21 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 10:44:07 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/02/10 21:30:29 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/11 04:21:29 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	clean_invalid_cmd(t_mini *mini, char **envp)
+void	handle_parent_fds(int *prev_fd, t_cmd *cmd, int pipefd[2])
 {
-	free_split(envp);
-	free_all(mini);
-	free_envp(mini->env_list);
-	close(mini->original_stdin);
-	close(mini->original_stdout);
-	exit(0);
-}
-
-void	clean_child(char **envp, t_mini *mini)
-{
-	free_split(envp);
-	free_all(mini);
-	free_envp(mini->env_list);
-	close(mini->original_stdin);
-	close(mini->original_stdout);
+	if (*prev_fd != -1)
+		close(*prev_fd);
+	if (cmd->next)
+	{
+		close(pipefd[1]);
+		*prev_fd = pipefd[0];
+	}
 }
 
 void	free_split(char **split)
@@ -57,6 +49,14 @@ char	*ft_strjoin_free(char *s1, char *s2)
 	return (joined);
 }
 
+static void	treat_signals(int status)
+{
+	if (WTERMSIG(status) == SIGQUIT)
+		printf("Quit (core dumped)\n");
+	else if (WTERMSIG(status) == SIGINT)
+		printf("\n");
+}
+
 void	wait_all(t_cmd *cmd, t_mini *mini)
 {
 	int		status;
@@ -64,6 +64,7 @@ void	wait_all(t_cmd *cmd, t_mini *mini)
 
 	if (!cmd)
 		return ;
+	setup_exec_signals();
 	last = cmd;
 	while (last->next)
 		last = last->next;
@@ -75,8 +76,12 @@ void	wait_all(t_cmd *cmd, t_mini *mini)
 			if (WIFEXITED(status))
 				mini->exit_code = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
+			{
 				mini->exit_code = 128 + WTERMSIG(status);
+				treat_signals(status);
+			}
 		}
 		cmd = cmd->next;
 	}
+	setup_signals();
 }

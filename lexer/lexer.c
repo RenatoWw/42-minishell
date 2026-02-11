@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/09 15:20:34 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/20 17:33:40 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/11 04:33:56 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,28 +48,20 @@ void	handle_word(t_token **token_list, char *temp, int *i)
 {
 	char	*substr;
 	int		start;
+	char	quote;
 
 	start = *i;
-	while ((is_space(temp[*i]) == 0 && !is_operator(&temp[*i])) && temp[*i])
+	quote = 0;
+	while (temp[*i])
+	{
+		if (!quote && (temp[*i] == '\'' || temp[*i] == '"'))
+			quote = temp[*i];
+		else if (quote && temp[*i] == quote)
+			quote = 0;
+		if (!quote && (is_space(temp[*i]) || is_operator(&temp[*i])))
+			break ;
 		(*i)++;
-	substr = ft_substr(temp, start, *i - start);
-	insert_back(token_list, substr, TOKEN_WORD);
-}
-
-void	handle_quote(t_token **token_list, char *temp, int *i)
-{
-	char	*substr;
-	char	quote;
-	int		start;
-
-	quote = '"';
-	if (temp[*i] == '\'')
-		quote = '\'';
-	start = (*i)++;
-	while (temp[*i] != quote && temp[*i])
-		(*i)++;
-	if (temp[*i] == quote)
-		(*i)++;
+	}
 	substr = ft_substr(temp, start, *i - start);
 	insert_back(token_list, substr, TOKEN_WORD);
 }
@@ -91,8 +83,6 @@ t_token	*assign_tokens(t_mini *mini)
 			break ;
 		if (is_operator(&temp[i]))
 			handle_operator(&token_list, temp, &i);
-		else if (temp[i] == '"' || temp[i] == '\'')
-			handle_quote(&token_list, temp, &i);
 		else
 			handle_word(&token_list, temp, &i);
 	}

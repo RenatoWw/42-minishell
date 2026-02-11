@@ -33,6 +33,7 @@ SRCS = minishell.c \
 		parser/parser_utils.c \
 		minishell_utils2.c \
 		parser/parser_utils2.c \
+		execute/utils_exec_free.c \
 		expander/envp_utils.c \
 
 SRCS_TEST = test/test_main.c \
@@ -61,6 +62,7 @@ SRCS_TEST = test/test_main.c \
 			parser/parser_utils.c \
 			minishell_utils2.c \
 			parser/parser_utils2.c \
+			execute/utils_exec_free.c \
 			expander/envp_utils.c \
 			test/test_execute.c \
 

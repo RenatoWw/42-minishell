@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:52:59 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/10 21:14:52 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/11 01:28:57 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,5 @@ int	verify_syntax(t_token *token_list, int *exit_code)
 		}
 		temp = temp->next;
 	}
-	*exit_code = 0;
 	return (0);
 }
