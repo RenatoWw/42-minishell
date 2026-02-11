@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/31 05:12:23 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/09 21:06:10 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 16:58:00 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,21 @@ void	get_cmd_and_execute(t_mini *mini)
 
 	mini->tokens = assign_tokens(mini);
 	mini->cmd = parse_tokens(mini->tokens, mini);
+	envp = NULL;
 	if (!mini->cmd)
 	{
 		free_all(mini);
 		return ;
 	}
 	envp = env_to_arr(mini->env_list);
+	mini->env_backup = envp;
 	expand_variables(mini);
 	if (!mini->cmd->next && is_builtin(mini->cmd->cmd_args[0]))
 		mini->exit_code = execute_single_builtin(mini);
 	else
 		execute_cmds(mini->cmd, envp, mini);
 	free_split(envp);
+	mini->env_backup = NULL;
 	restore_stdio(mini);
 	free_all(mini);
 }

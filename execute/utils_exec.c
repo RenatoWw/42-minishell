@@ -6,11 +6,18 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 10:44:07 by dapinhei          #+#    #+#             */
-/*   Updated: 2026/01/20 12:53:18 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:17:54 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	clean_child(char **envp, t_mini *mini)
+{
+	free_split(envp);
+	free_all(mini);
+	free_envp(mini->env_list);
+}
 
 void	free_split(char **split)
 {

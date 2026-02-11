@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 18:22:27 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/09 20:43:59 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 17:57:53 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,17 @@ typedef struct s_mini
 	t_cmd	*cmd;
 	char	*input;
 	char	*prompt_str;
+	char	**env_backup;
 	int		exit_code;
 	int		original_stdin;
 	int		original_stdout;
 }	t_mini;
+
+typedef struct s_fd
+{
+	int	pipefd[2];
+	int	prev_fd;
+}	t_fd;
 
 /* Lexer functions */
 t_token		*create_token(char *value, t_token_type type);
@@ -119,7 +126,7 @@ void		remove_envp_node(t_env **head, t_env *node);
 t_env		*search_node(t_env *head, char *key);
 int			is_valid_env_key(char *key);
 t_env		*find_env_node(t_env *env, char *key);
-void		remove_quotes(char **temp);
+void		remove_quote(char **temp);
 
 /* Minishell utils */
 void		restore_stdio(t_mini *mini);
@@ -167,6 +174,7 @@ int			is_builtin(char *cmd);
 int			exec_builtin(char **args, t_mini *mini);
 int			execute_single_builtin(t_mini *mini);
 char		*expand_string(char *input, t_mini *mini);
+void		clean_child(char **envp, t_mini *mini);
 
 /*teste execute teste_execute.c */
 char		**make_args(char *a, char *b, char *c);

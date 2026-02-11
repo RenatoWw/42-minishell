@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/29 17:52:31 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/29 18:22:37 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 18:01:58 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,13 @@ static int	ft_isnumber(char *str)
 	return (1);
 }
 
+static void	clean_all(t_mini *mini)
+{
+	free_split(mini->env_backup);
+	free_all(mini);
+	free_envp(mini->env_list);
+}
+
 int	exit_builtin(t_mini *mini, char **args)
 {
 	long long	status;
@@ -59,8 +66,7 @@ int	exit_builtin(t_mini *mini, char **args)
 	printf("exit\n");
 	if (!args[1])
 	{
-		free_all(mini);
-		free_envp(mini->env_list);
+		clean_all(mini);
 		exit(mini->exit_code);
 	}
 	if (ft_isnumber(args[1]) == 0)
@@ -76,7 +82,6 @@ int	exit_builtin(t_mini *mini, char **args)
 		return (1);
 	}
 	status = ft_atoll(args[1]);
-	free_all(mini);
-	free_envp(mini->env_list);
+	clean_all(mini);
 	exit(status % 256);
 }

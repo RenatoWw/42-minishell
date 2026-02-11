@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:07:15 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/09 21:22:29 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 16:38:58 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	is_valid_env_key(char *key)
 	return (1);
 }
 
-void	remove_quotes(char **temp)
+void	remove_quote(char **temp)
 {
 	char	*str;
 	char	*new_str;

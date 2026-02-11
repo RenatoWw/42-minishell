@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 14:52:59 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/01/26 19:39:12 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 21:14:52 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,6 @@ int	invalid_pipe(t_token *temp)
 		return (print_error("|"));
 	else if (temp->type == TOKEN_PIPE && temp->next->type == TOKEN_PIPE)
 		return (print_error("|"));
-	else if (temp->type == TOKEN_PIPE && temp->next->type == TOKEN_REDIRECT_IN)
-		return (print_error("|"));
-	else if (temp->type == TOKEN_PIPE && temp->next->type == TOKEN_REDIRECT_OUT)
-		return (print_error("|"));
-	else if (temp->type == TOKEN_PIPE && temp->next->type == TOKEN_APPEND)
-		return (print_error("|"));
 	else if (temp->type == TOKEN_PIPE && temp->prev->type == TOKEN_REDIRECT_IN)
 		return (print_error("|"));
 	else if (temp->type == TOKEN_PIPE && temp->prev->type == TOKEN_REDIRECT_OUT)
@@ -62,8 +56,6 @@ int	invalid_red(t_token *temp)
 	else if (temp->type == TOKEN_REDIRECT_OUT
 		&& temp->next->type == TOKEN_APPEND)
 		return (print_error(">>"));
-	else if (temp->type == TOKEN_HEREDOC && temp->prev == NULL)
-		return (print_error(NULL));
 	else if (temp->type == TOKEN_HEREDOC && temp->next == NULL)
 		return (print_error(NULL));
 	return (0);

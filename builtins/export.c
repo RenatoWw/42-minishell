@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/26 19:55:24 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/09 20:16:25 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 18:05:19 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,29 @@ static void	print_env(t_env *env)
 	free(env_add);
 }
 
+static int	export_helper(char **arg, char **eq_sign, char **key, char **value)
+{
+	if (*eq_sign)
+	{
+		*key = ft_substr(*arg, 0, *eq_sign - *arg);
+		*value = ft_strdup(*eq_sign + 1);
+	}
+	else
+	{
+		*key = ft_strdup(*arg);
+		*value = NULL;
+	}
+	if (!is_valid_env_key(*key))
+	{
+		printf(RED "export: `%s': not a valid identifier\n" RESET, *arg);
+		free(*key);
+		if (*value)
+			free(*value);
+		return (1);
+	}
+	return (0);
+}
+
 static void	handle_export_arg(t_mini *mini, char *arg)
 {
 	char	*key;
@@ -71,24 +94,8 @@ static void	handle_export_arg(t_mini *mini, char *arg)
 	t_env	*existing_node;
 
 	equal_sign = ft_strchr(arg, '=');
-	if (equal_sign)
-	{
-		key = ft_substr(arg, 0, equal_sign - arg);
-		value = ft_strdup(equal_sign + 1);
-	}
-	else
-	{
-		key = ft_strdup(arg);
-		value = NULL;
-	}
-	if (!is_valid_env_key(key))
-	{
-		printf(RED "export: `%s': not a valid identifier\n" RESET, arg);
-		free(key);
-		if (value)
-			free(value);
+	if (export_helper(&arg, &equal_sign, &key, &value) == 1)
 		return ;
-	}
 	existing_node = find_env_node(mini->env_list, key);
 	if (existing_node)
 	{

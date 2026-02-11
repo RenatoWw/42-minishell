@@ -6,7 +6,7 @@
 /*   By: ranhaia- <ranhaia-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/06 16:10:49 by ranhaia-          #+#    #+#             */
-/*   Updated: 2026/02/09 21:22:46 by ranhaia-         ###   ########.fr       */
+/*   Updated: 2026/02/10 21:17:04 by ranhaia-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,13 @@
 // Heredoc Expander
 
 int	g_signal;
+
+static void	after_clean(t_mini *mini)
+{
+	rl_clear_history();
+	free_all(mini);
+	free_envp(mini->env_list);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -44,8 +51,6 @@ int	main(int argc, char **argv, char **envp)
 			free(mini.prompt_str);
 		}
 	}
-	rl_clear_history();
-	free_all(&mini);
-	free_envp(mini.env_list);
+	after_clean(&mini);
 	return (0);
 }
